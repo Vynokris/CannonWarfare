@@ -1,6 +1,9 @@
 #include "Cannon.h"
+#include "RaylibConversions.h"
+using namespace Maths;
 
-Cannon::Cannon()
+Cannon::Cannon(const float& _groundHeight)
+	: groundHeight(_groundHeight)
 {
 }
 
@@ -19,11 +22,13 @@ void Cannon::Update(const float& deltaTime)
 
 void Cannon::Draw()
 {
+	DrawPolyLines(ToRayVector2(position), 4, 50, radToDeg(rotation) - 45, WHITE);
+
 	for (CannonBall* projectile : projectiles)
 		projectile->Draw();
 }
 
 void Cannon::Shoot()
 {
-	projectiles.push_back(new CannonBall(position, Maths::Vector2(rotation, shootingVelocity, true)));
+	projectiles.push_back(new CannonBall(position, Maths::Vector2(rotation, shootingVelocity, true), groundHeight));
 }

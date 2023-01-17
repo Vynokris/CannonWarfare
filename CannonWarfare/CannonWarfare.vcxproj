@@ -36,6 +36,7 @@
     <ClCompile Include="Sources\Maths\Arithmetic.cpp" />
     <ClCompile Include="Sources\Maths\Color.cpp" />
     <ClCompile Include="Sources\Maths\Quaternion.cpp" />
+    <ClCompile Include="Sources\Maths\RaylibConversions.cpp" />
     <ClCompile Include="Sources\Maths\Transform.cpp" />
     <ClCompile Include="Sources\Maths\Vector2.cpp" />
     <ClCompile Include="Sources\Maths\Vector3.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="Includes\Maths\Maths.h" />
     <ClInclude Include="Includes\Maths\Matrix.h" />
     <ClInclude Include="Includes\Maths\Quaternion.h" />
+    <ClInclude Include="Includes\Maths\RaylibConversions.h" />
     <ClInclude Include="Includes\Maths\Transform.h" />
     <ClInclude Include="Includes\Maths\Vector2.h" />
     <ClInclude Include="Includes\Maths\Vector3.h" />

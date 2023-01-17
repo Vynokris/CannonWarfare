@@ -1,3 +1,3 @@
 #pragma once
 
-#define GRAVITY 9.81
+#define GRAVITY 9.81f

@@ -114,6 +114,9 @@
     <ClCompile Include="Sources\CannonBall.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Maths\RaylibConversions.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imstb_textedit.h">
@@ -217,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="Includes\Physics\PhysicsConstants.h">
       <Filter>Fichiers d%27en-tête\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\RaylibConversions.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

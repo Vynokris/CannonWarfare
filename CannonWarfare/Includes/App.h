@@ -1,17 +1,22 @@
 #pragma once
-#include "Vector2.h"
+#include "Cannon.h"
+#include "Color.h"
 
 class App
 {
 private:
 	Maths::Vector2 screenSize;
+	Maths::RGBA    clearColor;
 	int   targetFPS;
 	float targetDeltaTime;
+
+	Cannon cannon;
+	float  groundHeight;
 
 	void DrawUi();
 
 public:
-	App(const Maths::Vector2& _screenSize, const int& _targetFPS);
+	App(const Maths::Vector2& _screenSize, const int& _targetFPS, const Maths::RGBA& _clearColor = {});
 	~App();
 
 	void Update(const float& deltaTime);
