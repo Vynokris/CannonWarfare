@@ -41,6 +41,8 @@
     <ClCompile Include="Sources\Maths\Vector2.cpp" />
     <ClCompile Include="Sources\Maths\Vector3.cpp" />
     <ClCompile Include="Sources\Maths\Vector4.cpp" />
+    <ClCompile Include="Sources\Particle.cpp" />
+    <ClCompile Include="Sources\ParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imconfig.h" />
@@ -76,8 +78,11 @@
     <ClInclude Include="Includes\Maths\Vector3.h" />
     <ClInclude Include="Includes\Maths\Vector4.h" />
     <ClInclude Include="Includes\Maths\Vertex.h" />
+    <ClInclude Include="Includes\Particle.h" />
+    <ClInclude Include="Includes\ParticleManager.h" />
     <ClInclude Include="Includes\Physics\Physics.h" />
     <ClInclude Include="Includes\Physics\PhysicsConstants.h" />
+    <ClInclude Include="Includes\SpriteVertices.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Includes\Maths\Matrix.inl" />
