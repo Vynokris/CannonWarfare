@@ -28,6 +28,8 @@
     <ClCompile Include="Externals\raylib\rtextures.c" />
     <ClCompile Include="Externals\raylib\utils.c" />
     <ClCompile Include="Externals\rlimgui\rlImGui.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="Sources\App.cpp" />
     <ClCompile Include="Sources\Cannon.cpp" />
     <ClCompile Include="Sources\CannonBall.cpp" />
@@ -78,6 +80,9 @@
     <ClInclude Include="Includes\Maths\Vertex.h" />
     <ClInclude Include="Includes\Physics\Physics.h" />
     <ClInclude Include="Includes\Physics\PhysicsConstants.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleManager.h" />
+    <ClInclude Include="SpriteVertices.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Includes\Maths\Matrix.inl" />
