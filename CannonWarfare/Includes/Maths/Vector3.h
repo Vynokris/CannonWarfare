@@ -17,7 +17,7 @@ namespace Maths
         Vector3(const float& all);                                  // Vector with equal coordinates.
         Vector3(const float& _x, const float& _y, const float& _z); // Vector with 3 coordinates.
         Vector3(const Vector3& p1, const Vector3& p2);              // Vector from 2 points.
-        Vector3(const Vector3& angles, const float& length);        // Vector from angles (useless bool).
+        Vector3(const Vector3& angles, const float& length);        // Vector from angles.
 
         // -- Operators -- //
         template <typename T> bool    operator==(const T& val) const;

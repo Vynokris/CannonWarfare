@@ -43,6 +43,12 @@
     <Filter Include="Fichiers d%27en-tête\Maths">
       <UniqueIdentifier>{95073b68-4855-431a-833f-60268a741f02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Physics">
+      <UniqueIdentifier>{1c5a0c29-401c-42ad-a1d9-67f63bb47b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Physics">
+      <UniqueIdentifier>{b0ecb277-201d-40b5-975e-688629355b55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\main.cpp">
@@ -100,6 +106,12 @@
       <Filter>Fichiers sources\Maths</Filter>
     </ClCompile>
     <ClCompile Include="Sources\App.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Cannon.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\CannonBall.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -193,6 +205,18 @@
     </ClInclude>
     <ClInclude Include="Includes\App.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Cannon.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\CannonBall.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Physics\Physics.h">
+      <Filter>Fichiers d%27en-tête\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Physics\PhysicsConstants.h">
+      <Filter>Fichiers d%27en-tête\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

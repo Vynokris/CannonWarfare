@@ -29,6 +29,8 @@
     <ClCompile Include="Externals\raylib\utils.c" />
     <ClCompile Include="Externals\rlimgui\rlImGui.cpp" />
     <ClCompile Include="Sources\App.cpp" />
+    <ClCompile Include="Sources\Cannon.cpp" />
+    <ClCompile Include="Sources\CannonBall.cpp" />
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\Maths\AngleAxis.cpp" />
     <ClCompile Include="Sources\Maths\Arithmetic.cpp" />
@@ -58,6 +60,8 @@
     <ClInclude Include="Externals\rlimgui\IconsForkAwesome.h" />
     <ClInclude Include="Externals\rlimgui\rlImGui.h" />
     <ClInclude Include="Includes\App.h" />
+    <ClInclude Include="Includes\Cannon.h" />
+    <ClInclude Include="Includes\CannonBall.h" />
     <ClInclude Include="Includes\Maths\AngleAxis.h" />
     <ClInclude Include="Includes\Maths\Arithmetic.h" />
     <ClInclude Include="Includes\Maths\Color.h" />
@@ -70,6 +74,8 @@
     <ClInclude Include="Includes\Maths\Vector3.h" />
     <ClInclude Include="Includes\Maths\Vector4.h" />
     <ClInclude Include="Includes\Maths\Vertex.h" />
+    <ClInclude Include="Includes\Physics\Physics.h" />
+    <ClInclude Include="Includes\Physics\PhysicsConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Includes\Maths\Matrix.inl" />
@@ -154,7 +160,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Includes\Physics;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,7 +176,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Includes\Physics;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,7 +192,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Includes\Physics;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>26451;</DisableSpecificWarnings>
     </ClCompile>
@@ -205,7 +211,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Includes\Physics;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>26451</DisableSpecificWarnings>
     </ClCompile>

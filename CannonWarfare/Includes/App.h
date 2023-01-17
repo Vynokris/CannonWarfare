@@ -8,6 +8,8 @@ private:
 	int   targetFPS;
 	float targetDeltaTime;
 
+	void DrawUi();
+
 public:
 	App(const Maths::Vector2& _screenSize, const int& _targetFPS);
 	~App();

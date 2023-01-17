@@ -36,6 +36,7 @@ int main(void)
             app.Update(1.f / GetFPS());
             app.Draw();
 
+            // Limit loop duration to target delta time.
             loopTime += milliseconds(int(app.GetTargetDeltaTime() * 1000));
             std::this_thread::sleep_until(loopTime);
         }

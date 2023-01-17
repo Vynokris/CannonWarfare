@@ -47,20 +47,26 @@ void App::Draw()
 {
     BeginDrawing();
     {
-        // Raylib drawing.
         ClearBackground(DARKGRAY);
         DrawRectangle(10, 10, 100, 100, BLUE);
 
-        // ImGui drawing.
-        BeginRLImGui();
+        DrawUi();
+    }
+    EndDrawing();
+}
+
+void App::DrawUi()
+{
+    BeginRLImGui();
+    {
+        // Stats window.
+        if (ImGui::Begin("Stats"));
         {
-            ImGui::Begin("Stats");
             const int fps = GetFPS();
             ImGui::Text("FPS: %d", fps);
             ImGui::Text("Delta Time: %.3f", 1.f / fps);
-            ImGui::End();
         }
-        EndRLImGui();
+        ImGui::End();
     }
-    EndDrawing();
+    EndRLImGui();
 }
