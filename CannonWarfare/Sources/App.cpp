@@ -97,17 +97,17 @@ void App::DrawUi()
         {
             ImGui::PushItemWidth(43);
 
+            static float shootingVelocity = cannon.GetShootingVelocity();
+            if (ImGui::DragFloat("Shooting Velocity", &shootingVelocity, 10.f, 100.f, 2000.f, "%.0f"))
+                cannon.SetShootingVelocity(shootingVelocity);
+
             static float height = 0;
             if (ImGui::DragFloat("Height", &height, 1.f, 0.f, screenSize.y - 250, "%.0f"))
                 cannon.SetPosition({ cannon.GetPosition().x, screenSize.y - 150 - height });
 
             static float rotation = -radToDeg(cannon.GetRotation());
-            if (ImGui::DragFloat("Rotation", &rotation, 1.f, -90.f, 90.f, "%.0f"))
+            if (!cannon.automaticRotation && ImGui::DragFloat("Rotation", &rotation, 1.f, -90.f, 90.f, "%.0f"))
                 cannon.SetRotation(-degToRad(rotation));
-
-            static float shootingVelocity = cannon.GetShootingVelocity();
-            if (ImGui::DragFloat("Shooting Velocity", &shootingVelocity, 10.f, 100.f, 2000.f, "%.0f"))
-                cannon.SetShootingVelocity(shootingVelocity);
 
             if (ImGui::Checkbox("Automatic rotation", &cannon.automaticRotation))
                 rotation = -radToDeg(cannon.GetRotation());
