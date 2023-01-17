@@ -43,12 +43,6 @@
     <Filter Include="Fichiers d%27en-tête\Maths">
       <UniqueIdentifier>{95073b68-4855-431a-833f-60268a741f02}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Core">
-      <UniqueIdentifier>{147f627e-5929-4025-9326-ca2b66c16e4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers sources\Core">
-      <UniqueIdentifier>{553948dd-fb2f-4351-8ec9-fb5a13fddea2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\main.cpp">
@@ -106,7 +100,7 @@
       <Filter>Fichiers sources\Maths</Filter>
     </ClCompile>
     <ClCompile Include="Sources\App.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,7 +192,7 @@
       <Filter>Fichiers d%27en-tête\Maths</Filter>
     </ClInclude>
     <ClInclude Include="Includes\App.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
