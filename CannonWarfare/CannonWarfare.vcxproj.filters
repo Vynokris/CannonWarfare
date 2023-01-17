@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Externals">
+      <UniqueIdentifier>{9aa44a94-35a2-46ea-a65c-987565c5bc60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Externals">
+      <UniqueIdentifier>{245635fc-277b-431f-a665-eaa7135bd805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Externals\imgui">
+      <UniqueIdentifier>{3833afb2-4285-42a6-954b-75c9ca362e3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Externals\imgui">
+      <UniqueIdentifier>{5ceb8787-9552-42b3-a7bd-8e34f891f3ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Externals\raylib">
+      <UniqueIdentifier>{f5b52aff-5d3e-43db-a4bb-7ee3884ce7a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Externals\raylib">
+      <UniqueIdentifier>{e69f1a15-7e33-4905-a3cd-54eaf1757a96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Externals\rlimgui">
+      <UniqueIdentifier>{f9f983c1-7c95-4697-9334-35b921197719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Externals\rlimgui">
+      <UniqueIdentifier>{ee4f173b-94eb-47c9-896a-80dcfa30f737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Maths">
+      <UniqueIdentifier>{728f92ad-e77c-41c7-9f64-9a075d3a8baf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Maths">
+      <UniqueIdentifier>{95073b68-4855-431a-833f-60268a741f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Core">
+      <UniqueIdentifier>{147f627e-5929-4025-9326-ca2b66c16e4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Core">
+      <UniqueIdentifier>{553948dd-fb2f-4351-8ec9-fb5a13fddea2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sources\main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
+      <Filter>Fichiers sources\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui.cpp">
+      <Filter>Fichiers sources\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_draw.cpp">
+      <Filter>Fichiers sources\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_stdlib.cpp">
+      <Filter>Fichiers sources\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_tables.cpp">
+      <Filter>Fichiers sources\Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\raylib\rtextures.c">
+      <Filter>Fichiers sources\Externals\raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\raylib\utils.c">
+      <Filter>Fichiers sources\Externals\raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\raylib\rglfw.c">
+      <Filter>Fichiers sources\Externals\raylib</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\rlimgui\rlImGui.cpp">
+      <Filter>Fichiers sources\Externals\rlimgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Quaternion.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Transform.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Vector2.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Vector3.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Vector4.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\AngleAxis.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Arithmetic.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Maths\Color.cpp">
+      <Filter>Fichiers sources\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\App.cpp">
+      <Filter>Fichiers sources\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Externals\imgui\imstb_textedit.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_truetype.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imconfig.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_internal.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_stdlib.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_rectpack.h">
+      <Filter>Fichiers d%27en-tête\Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\raylib\utils.h">
+      <Filter>Fichiers d%27en-tête\Externals\raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\raylib\config.h">
+      <Filter>Fichiers d%27en-tête\Externals\raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\raylib\raylib.h">
+      <Filter>Fichiers d%27en-tête\Externals\raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\raylib\rlgl.h">
+      <Filter>Fichiers d%27en-tête\Externals\raylib</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\rlimgui\ForkAwesomeFontData.h">
+      <Filter>Fichiers d%27en-tête\Externals\rlimgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\rlimgui\IconsFontAwesome5.h">
+      <Filter>Fichiers d%27en-tête\Externals\rlimgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\rlimgui\IconsForkAwesome.h">
+      <Filter>Fichiers d%27en-tête\Externals\rlimgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\rlimgui\rlImGui.h">
+      <Filter>Fichiers d%27en-tête\Externals\rlimgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\rlimgui\FA5FreeRegularFontData.h">
+      <Filter>Fichiers d%27en-tête\Externals\rlimgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\rlimgui\FA5FreeSolidFontData.h">
+      <Filter>Fichiers d%27en-tête\Externals\rlimgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Quaternion.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Transform.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Vector2.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Vector3.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Vector4.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Vertex.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\AngleAxis.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Arithmetic.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Color.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\MathConstants.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Maths.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Maths\Matrix.h">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\App.h">
+      <Filter>Fichiers d%27en-tête\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Includes\Maths\Matrix.inl">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </None>
+    <None Include="Includes\Maths\Quaternion.inl">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </None>
+    <None Include="Includes\Maths\Vector2.inl">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </None>
+    <None Include="Includes\Maths\Vector3.inl">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </None>
+    <None Include="Includes\Maths\Vector4.inl">
+      <Filter>Fichiers d%27en-tête\Maths</Filter>
+    </None>
+  </ItemGroup>
+</Project>
