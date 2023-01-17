@@ -69,6 +69,9 @@ namespace Maths
         // Returns the vector's contents as a string.
         std::string ToString(const int& precision = 2) const;
     };
+
+
+    Vector2 LineIntersection(const Vector2& origin1, const Vector2& dir1, const Vector2& origin2, const Vector2& dir2);
 }
 
 #include "Vector2.inl"
