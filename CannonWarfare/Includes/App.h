@@ -1,13 +1,12 @@
 #pragma once
 #include "Cannon.h"
-#include "Color.h"
 #include <chrono>
 
 class App
 {
 private:
+	static inline std::chrono::system_clock::time_point startTime;
 	Maths::Vector2 screenSize;
-	Maths::RGBA    clearColor;
 	int   targetFPS;
 	float targetDeltaTime;
 
@@ -17,18 +16,18 @@ private:
 	void DrawUi();
 
 public:
-	static inline std::chrono::system_clock::time_point startTime;
-	static float GetTimeSinceStart();
 
-	App(const Maths::Vector2& _screenSize, const int& _targetFPS, const Maths::RGBA& _clearColor = {});
+	App(const Maths::Vector2& _screenSize, const int& _targetFPS);
 	~App();
 
 	void Update(const float& deltaTime);
 	void Draw();
 
-	int            GetScreenWidth    () { return (int)screenSize.x; }
-	int            GetScreenHeight   () { return (int)screenSize.x; }
-	Maths::Vector2 GetScreenSize     () { return screenSize;        }
-	int            GetTargetFPS      () { return targetFPS;         }
-	float          GetTargetDeltaTime() { return targetDeltaTime;   }
+	int            GetScreenWidth    () const { return (int)screenSize.x; }
+	int            GetScreenHeight   () const { return (int)screenSize.x; }
+	Maths::Vector2 GetScreenSize     () const { return screenSize;        }
+	int            GetTargetFPS      () const { return targetFPS;         }
+	float          GetTargetDeltaTime() const { return targetDeltaTime;   }
+	
+	static float GetTimeSinceStart();
 };
