@@ -1,48 +1,54 @@
-#pragma region Linked Includes
 #include "ParticleManager.h"
-#pragma endregion
-
-#pragma region Custom Includes
 #include "RaylibConversions.h"
-#pragma endregion
-
-#pragma region Namespaces
 using namespace Maths;
-#pragma endregion
+
+ParticleManager::~ParticleManager()
+{
+    for (const Particle* particle : particles)
+        delete particle;
+}
 
 void ParticleManager::Update(const float& deltaTime)
 {
-    /*
-     * Execute update logic on all available spawners
-     */
-    for(size_t i = 0; i < GetSpawners().size(); i++)
+    // Update particle spawners.
+    for(size_t i = 0; i < particleSpawners.size(); i++)
     {
         particleSpawners[i]->Update(deltaTime);
 
-        /*
-         * State check of all available spawners
-         *  If spawner marked as destroy, execute destroy logic
-         */
-        if(particleSpawners[i]->ShouldDestroy())
+        // Erase any outdated spawner.
+        if(particleSpawners[i]->IsOutdated())
         {
             particleSpawners.erase(particleSpawners.begin() + i);
             i--;
         }
     }
-}
 
-void ParticleManager::Draw()
-{
-    /*
-     * Execute drawing logic on all available spawners
-     */
-    for(ParticleSpawner* spawner : GetSpawners())
+    // Update particles.
+    for (size_t i = 0; i < particles.size(); i++)
     {
-        spawner->Draw();
+        particles[i]->Update(deltaTime);
+
+        // Erase any outdated particle
+        if (particles[i]->IsOutdated())
+        {
+            particles.erase(particles.begin() + i);
+            i--;
+        }
     }
 }
 
-void ParticleManager::SpawnParticles(Particle* _particle, const int& _spawnRate, const float& _spawnDuration)
+void ParticleManager::Draw() const
 {
-    particleSpawners.emplace_back(new ParticleSpawner(_particle, _spawnRate, _spawnDuration));
+    for (const Particle* particle : particles)
+        particle->Draw();
+}
+
+void ParticleManager::CreateSpawner(const int& spawnRate, const float& spawnDuration, const SpawnerParticleParams& params, const Transform2D* parentTransform)
+{
+    particleSpawners.push_back(new ParticleSpawner(*this, spawnRate, spawnDuration, params, parentTransform));
+}
+
+void ParticleManager::AddParticle(Particle* particle)
+{
+    particles.push_back(particle);
 }

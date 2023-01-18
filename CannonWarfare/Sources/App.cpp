@@ -7,7 +7,7 @@ using namespace Maths;
 
 
 App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
-    : screenSize(_screenSize), targetFPS(_targetFPS), targetDeltaTime(1.f / targetFPS), cannon(this, groundHeight)
+    : screenSize(_screenSize), targetFPS(_targetFPS), targetDeltaTime(1.f / targetFPS), cannon(particleManager, groundHeight)
 {
     startTime = std::chrono::system_clock::now();
 
@@ -50,8 +50,6 @@ App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
     cannon.SetPosition({ 90, screenSize.y - 150 });
     cannon.SetRotation(-PI / 5);
     cannon.SetShootingVelocity(900);
-
-    particleManager = new ParticleManager();
 }
 
 App::~App()
@@ -74,7 +72,7 @@ void App::Update(const float& deltaTime)
     for (Star& star : stars)
         star.Update(deltaTime);
     cannon.Update(deltaTime);
-    particleManager->Update(deltaTime);
+    particleManager.Update(deltaTime);
 }
 
 void App::Draw()
@@ -84,11 +82,11 @@ void App::Draw()
         ClearBackground(BLACK);
         for (const Star& star : stars) star.Draw(); // Draw stars.
         cannon.DrawTrajectories();
+        particleManager.Draw();
         cannon.Draw();
         DrawRectangle(0, (int)groundHeight, (int)screenSize.x, (int)(screenSize.y - groundHeight), BLACK); // Draw ground.
         cannon.DrawMeasurements();
         DrawLine(0, (int)groundHeight, (int)screenSize.x, (int)groundHeight, WHITE); // Draw ground top.
-        particleManager->Draw();
         DrawUi();
     }
     graphics->EndDrawing();

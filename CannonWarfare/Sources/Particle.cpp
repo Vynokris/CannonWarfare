@@ -1,50 +1,34 @@
-#pragma region Linked Includes
 #include "Particle.h"
-#pragma endregion
-
-#pragma region Custom Includes
 #include "RaylibConversions.h"
-#pragma endregion
 
-#pragma region Namespaces
 using namespace Maths;
-#pragma endregion
 
-Particle::Particle(const Shape& _shape, const Maths::Vector2& _position, const Maths::Vector2& _velocity, const float& _rotation, const float& _size, const float& _friction, const Color& _color)
-	: shape(_shape), position(_position), velocity(_velocity), rotation(_rotation), size(_size), friction(_friction), color(_color)
+Particle::Particle(const ParticleShapes& _shape, const Maths::Transform2D& _transform, const float& _size, const float& _friction, const Color& _color)
+	: shape(_shape), transform(_transform), size(_size), friction(_friction), color(_color)
 {}
 
-Particle::Particle(const Particle* particle)
-	: shape(particle->GetShape()), position(particle->GetPosition()), velocity(particle->GetVelocity()), rotation(particle->GetRotation()),
-	  size(particle->GetSize()), friction(particle->GetFriction()), color(particle->GetColor())
-{}
-
-void Particle::Draw()
+void Particle::Draw() const
 {
-	switch (GetShape())
+	switch (shape)
 	{
-	case Shape::CIRCLE:
-		DrawCircleV(ToRayVector2(GetPosition()), GetSize(), GetColor());
+	case ParticleShapes::LINE:
+	{
+		const Maths::Vector2 normalizedV = transform.velocity.GetNormalized();
+		DrawLineEx(ToRayVector2(transform.position + normalizedV * 0.5f * size), ToRayVector2(transform.position - normalizedV * 0.5f * size), 1, color);
 		break;
-	case Shape::LINE:
-		DrawLineEx(ToRayVector2(GetPosition()), ToRayVector2(GetPosition() - GetVelocity().GetNormalized() * GetSize()), 2, GetColor());
+	}
+	case ParticleShapes::CIRCLE:
+		DrawCircleLines((int)transform.position.x, (int)transform.position.y, size, color);
 		break;
-	case Shape::SQUARE:
-		const Rectangle rectangle = Rectangle {
-			GetPosition().x - GetSize() / 2,
-			GetPosition().y - GetSize() / 2,
-			GetSize(),
-			GetSize()
-		};
-
-		DrawRectanglePro(rectangle, ToRayVector2(Maths::Vector2()), GetRotation() * 180 / PI, GetColor());
+	case ParticleShapes::POLYGON:
+		DrawPolyLines(ToRayVector2(transform.position), 4, size, radToDeg(transform.rotation), color);
 		break;
 	}
 }
 
 void Particle::Update(const float& deltaTime)
 {
-	SetVelocity(GetVelocity() * (1 - GetFriction() * deltaTime));
-	SetPosition(GetPosition() + GetVelocity()	   * deltaTime);
-	SetSize    (GetSize()     * deltaTime		   * 17);
+	transform.Update(deltaTime);
+	size -= 100 * deltaTime;
+	// transform.velocity *= friction * deltaTime;
 }

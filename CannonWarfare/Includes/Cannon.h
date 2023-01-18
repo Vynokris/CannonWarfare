@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include <vector>
 
-class App;
+class ParticleManager;
 
 struct CannonDrawPoints
 {
@@ -24,17 +24,18 @@ struct CannonDrawPoints
 class Cannon
 {
 private:
-	App* app;
+	ParticleManager& particleManager;
 	std::vector<CannonBall*> projectiles;
 	const float& groundHeight;
 
 	Maths::Vector2 position;
 	float rotation = 0, shootingVelocity = 0;
 
-	Maths::Vector2 landingPosition, controlPoint;
+	Maths::Vector2 landingVelocity, landingPosition, controlPoint;
 	float airTime = 0, maxHeight = 0, landingDistance = 0;
 
-	Color trajectoryColor      = MAGENTA;
+	Color cannonColor          = { 0, 255, 255, 255 };
+	Color trajectoryColor      = { 0, 255, 255, 255 };
 	Color landingDistanceColor = GREEN;
 	Color maxHeightColor       = RED;
 	float trajectoryAlpha      = 1.f;
@@ -53,7 +54,7 @@ private:
 	void UpdateDrawPoints();
 
 public:
-	Cannon(App* _app, const float& _groundHeight);
+	Cannon(ParticleManager& _particleManager, const float& _groundHeight);
 	~Cannon();
 
 	void Update(const float& deltaTime);

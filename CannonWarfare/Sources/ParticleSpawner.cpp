@@ -1,63 +1,51 @@
-﻿#pragma region Linked Includes
-#include "ParticleSpawner.h"
-
+﻿#include "ParticleSpawner.h"
+#include "Arithmetic.h"
+#include "ParticleManager.h"
 #include <iostream>
-#pragma endregion
+using namespace Maths;
 
-ParticleSpawner::ParticleSpawner(Particle* _particle, const int& _spawnRate, const float& _spawnDuration)
-    : baseParticle(_particle), spawnRate(_spawnRate), spawnDuration(_spawnDuration)
-{}
+static float RandFloatInBounds(const float& min, const float& max)
+{
+    if (min == max) return min;
+    return (rand() % (int)(max * 100 - min * 100) + (int)(min * 100)) / 100.f;
+}
+
+ParticleSpawner::ParticleSpawner(ParticleManager& _particleManager, const int& _spawnRate, const float& _spawnDuration, const SpawnerParticleParams& _params, const Transform2D* _parentTransform)
+    : particleManager(_particleManager), spawnRate(_spawnRate), spawnDuration(_spawnDuration), params(_params), parentTransform(_parentTransform)
+{
+}
 
 void ParticleSpawner::Update(const float& deltaTime)
 {
-    /*
-     * State check of particle spawner
-     *  If spawner is outdated, stop spawning logic.
-    */
     if(!IsOutdated())
     {
-        spawnDuration -= deltaTime;
-        spawnTimer -= deltaTime;
-
-        /*
-         * State check of spawner timer
-         *  If timer is ready, execute spawning logic.
-         */
-        if (CanSpawnParticles())
+        for (int i = 0; i < spawnRate; i++)
         {
-            for(int i = 0; i < spawnRate; i++)
-                particles.emplace_back(new Particle(baseParticle));
+            float minDir = params.minDirection;
+            float maxDir = params.maxDirection;
+
+            if (parentTransform)
+            {
+                minDir += parentTransform->rotation;
+                maxDir += parentTransform->rotation;
+            }
             
-            ResetSpawnTimer();
+            const float          randAngle     = RandFloatInBounds(minDir, maxDir);
+            const Maths::Vector2 randVelocity  = { randAngle, RandFloatInBounds(params.minVelocity, params.maxVelocity), true };
+            const float          randRotation  = degToRad(rand() % 360);
+            const float          randAngularV  = RandFloatInBounds(params.minAngularV, params.maxAngularV);
+            const float          randSize      = RandFloatInBounds(params.minSize,     params.maxSize);
+            const float          randFriction  = RandFloatInBounds(params.minFriction, params.maxFriction);
+                  Transform2D    randTransform = { params.position, randVelocity, {}, randRotation, randAngularV };
+
+            if (parentTransform)
+            {
+                randTransform.position = parentTransform->position;
+            }
+        
+            particleManager.AddParticle(new Particle(params.shape, randTransform, randSize, randFriction, params.color));
         }
-    }
-
-    /*
-     * Execute update logic on all available particles.
-     */
-    for (size_t i = 0; i < GetParticles().size(); i++)
-    {
-        particles[i]->Update(deltaTime);
-
-        /*
-         * State check of available particles
-         *  If particle is outdated, execute erase logic.
-         */
-        if (particles[i]->IsOutdated())
-        {
-            particles.erase(particles.begin() + i);
-            i--;
-        }
-    }
-}
-
-void ParticleSpawner::Draw()
-{
-    /*
-     * Execute draw logic on all available particles
-     */
-    for (Particle* particle : GetParticles())
-    {
-        particle->Draw();
+        
+        spawnDuration -= deltaTime;
     }
 }

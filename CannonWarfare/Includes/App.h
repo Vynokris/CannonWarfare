@@ -12,16 +12,15 @@ class App
 private:
 	static inline std::chrono::system_clock::time_point startTime;
 	
-	Maths::Vector2 screenSize;
-	int            targetFPS;
-	float          targetDeltaTime;
-	Graphics*      graphics;
+	Maths::Vector2  screenSize;
+	int             targetFPS;
+	float           targetDeltaTime;
+	Graphics*       graphics;
+	ParticleManager particleManager;
 
 	std::vector<Star> stars;
 	Cannon cannon;
 	float  groundHeight;
-
-	ParticleManager* particleManager;
 
 	void DrawUi();
 
@@ -41,5 +40,5 @@ public:
 	
 	static float GetTimeSinceStart();
 	
-	ParticleManager* GetParticleManager() const { return particleManager; } 
+	ParticleManager& GetParticleManager() { return particleManager; } 
 };

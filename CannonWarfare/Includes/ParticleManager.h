@@ -1,28 +1,24 @@
 #pragma once
 
-#pragma region Native Includes
-#include <vector>
-#pragma endregion
-
-#pragma region Custom Includes
 #include "ParticleSpawner.h"
-#pragma endregion
+#include <vector>
 
 class ParticleManager
 {
 private:
 	std::vector<ParticleSpawner*> particleSpawners;
+	std::vector<Particle*>        particles;
 
 public:
-	// Constructor & Destructor
-	ParticleManager()  = default;
-	~ParticleManager() = default;
-
+	~ParticleManager();
+	
 	// Methods
 	void Update(const float& deltaTime);
-	void Draw();
-	void SpawnParticles(Particle* _particle, const int& _spawnRate, const float& _spawnDuration);
+	void Draw() const;
+	void CreateSpawner(const int& spawnRate, const float& spawnDuration, const SpawnerParticleParams& params, const Maths::Transform2D* parentTransform = nullptr);
+	void AddParticle  (Particle* particle);
 
 	// Native Types - Getter
-	std::vector<ParticleSpawner*> GetSpawners() { return particleSpawners; }
+	std::vector<ParticleSpawner*> GetSpawners()  const { return particleSpawners; }
+    std::vector<Particle*>        GetParticles() const { return particles; }
 };

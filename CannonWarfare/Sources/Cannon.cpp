@@ -4,12 +4,10 @@
 #include "RaylibConversions.h"
 #include <sstream>
 #include <iomanip>
-
-#include "ParticleHelper.h"
 using namespace Maths;
 
-Cannon::Cannon(App* _app, const float& _groundHeight)
-	   : app(_app), groundHeight(_groundHeight)
+Cannon::Cannon(ParticleManager& _particleManager, const float& _groundHeight)
+	   : particleManager(_particleManager), groundHeight(_groundHeight)
 {
 }
 
@@ -30,7 +28,7 @@ void Cannon::UpdateTrajectory()
 	// The three coefficients of the equation: a*t^2 + b*t + c
 	const float a = GRAVITY * 0.5f;
 	const float b = v0.y;
-	const float c = position.y - groundHeight;
+	const float c = position.y - (groundHeight - 30);
 
 	// Find the value for delta's square root.
 	const float sqrtDelta = sqrt(sqpow(b) - 4*a*c);
@@ -41,7 +39,7 @@ void Cannon::UpdateTrajectory()
 	const float t  = (t1 >= t2 ? t1 : t2);
 
 	// Find the landing velocity using the cannonball's velocity equation: (v0.x, v0.y * g * t)
-	const Maths::Vector2 landingVelocity = { v0.x, v0.y + GRAVITY * t };
+	landingVelocity = { v0.x, v0.y + GRAVITY * t };
 
 	// Find the landing position using the cannonball's movement equation: (v0.x * t + p0.x, g * 0.5f * t^2 + v0.y * t + p0.y)
 	landingPosition = { v0.x*t + position.x, GRAVITY*0.5f*sqpow(t) + v0.y*t + position.y };
@@ -113,34 +111,34 @@ void Cannon::Draw() const
 	// Draw the back semi-circle.
 	const float degRot = radToDeg(rotation) + 90;
 	DrawCircleSector     (ToRayVector2(position), 40, -degRot-90, -degRot+90, 10, BLACK);
-	DrawCircleSectorLines(ToRayVector2(position), 40, -degRot-90, -degRot+90, 10, WHITE);
+	DrawCircleSectorLines(ToRayVector2(position), 40, -degRot-90, -degRot+90, 10, cannonColor);
 	DrawLineEx           (ToRayVector2(drawPoints.centerUp), ToRayVector2(drawPoints.centerDown), 2,  BLACK);
 
 	// Draw the barrel sides.
 	DrawTriangle(ToRayVector2(drawPoints.midDown   ), ToRayVector2(drawPoints.midUp     ), ToRayVector2(drawPoints.centerUp), BLACK);
 	DrawTriangle(ToRayVector2(drawPoints.centerUp  ), ToRayVector2(drawPoints.centerDown), ToRayVector2(drawPoints.midDown ), BLACK);
-	DrawLineEx  (ToRayVector2(drawPoints.centerUp  ), ToRayVector2(drawPoints.midUp     ), 1, WHITE);
-	DrawLineEx  (ToRayVector2(drawPoints.centerDown), ToRayVector2(drawPoints.midDown   ), 1, WHITE);
+	DrawLineEx  (ToRayVector2(drawPoints.centerUp  ), ToRayVector2(drawPoints.midUp     ), 1, cannonColor);
+	DrawLineEx  (ToRayVector2(drawPoints.centerDown), ToRayVector2(drawPoints.midDown   ), 1, cannonColor);
 
 	// Draw the sides of the tip of the barrel.
 	DrawCircleSector     (ToRayVector2((drawPoints.midUp   + drawPoints.frontUp  ) / 2), 7, -degRot-180, -degRot, 10, BLACK);
 	DrawCircleSector     (ToRayVector2((drawPoints.midDown + drawPoints.frontDown) / 2), 7, -degRot, -degRot+180, 10, BLACK);
-	DrawCircleSectorLines(ToRayVector2((drawPoints.midUp   + drawPoints.frontUp  ) / 2), 7, -degRot-180, -degRot, 10, WHITE);
-	DrawCircleSectorLines(ToRayVector2((drawPoints.midDown + drawPoints.frontDown) / 2), 7, -degRot, -degRot+180, 10, WHITE);
+	DrawCircleSectorLines(ToRayVector2((drawPoints.midUp   + drawPoints.frontUp  ) / 2), 7, -degRot-180, -degRot, 10, cannonColor);
+	DrawCircleSectorLines(ToRayVector2((drawPoints.midDown + drawPoints.frontDown) / 2), 7, -degRot, -degRot+180, 10, cannonColor);
 	DrawLineEx(ToRayVector2(drawPoints.midUp  ), ToRayVector2(drawPoints.frontUp  ), 2, BLACK);
 	DrawLineEx(ToRayVector2(drawPoints.midDown), ToRayVector2(drawPoints.frontDown), 2, BLACK);
 
 	// Draw the tip of the barrel.
 	DrawTriangle(ToRayVector2(drawPoints.frontDown), ToRayVector2(drawPoints.frontUp  ), ToRayVector2(drawPoints.midUp    ), BLACK);
 	DrawTriangle(ToRayVector2(drawPoints.midUp    ), ToRayVector2(drawPoints.midDown  ), ToRayVector2(drawPoints.frontDown), BLACK);
-	DrawLineEx  (ToRayVector2(drawPoints.midUp    ), ToRayVector2(drawPoints.midDown  ), 1, WHITE);
-	DrawLineEx  (ToRayVector2(drawPoints.frontUp  ), ToRayVector2(drawPoints.frontDown), 1, WHITE);
+	DrawLineEx  (ToRayVector2(drawPoints.midUp    ), ToRayVector2(drawPoints.midDown  ), 1, cannonColor);
+	DrawLineEx  (ToRayVector2(drawPoints.frontUp  ), ToRayVector2(drawPoints.frontDown), 1, cannonColor);
 
 	// Draw the wick.
 	DrawLineBezierCubic(ToRayVector2(drawPoints.wick0),
 						ToRayVector2(drawPoints.wick1),
 						ToRayVector2(drawPoints.wick2),
-						ToRayVector2(drawPoints.wick3), 1, WHITE);
+						ToRayVector2(drawPoints.wick3), 1, cannonColor);
 }
 
 void Cannon::DrawTrajectories() const
@@ -148,6 +146,7 @@ void Cannon::DrawTrajectories() const
 	// Draw the trajectory.
 	const Color curTrajectoryColor = { trajectoryColor.r, trajectoryColor.g, trajectoryColor.b, (unsigned char)(trajectoryAlpha * 255) };
 	DrawLineBezierQuad(ToRayVector2(position), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, curTrajectoryColor);
+	DrawPoly(ToRayVector2(landingPosition), 3, 12, radToDeg(landingVelocity.GetAngle()) - 90, curTrajectoryColor);
 
 	// Draw the air time text.
 	{
@@ -186,12 +185,20 @@ void Cannon::DrawMeasurements() const
 
 void Cannon::Shoot()
 {
-	Particle* particle = new Particle(ParticlesHelper::LINE);
-	particle->SetPosition(position);
-	particle->SetVelocity(Maths::Vector2(rotation, shootingVelocity, true));
-	app->GetParticleManager()->SpawnParticles(particle, 5, 2);
+	const SpawnerParticleParams params = {
+		ParticleShapes::LINE,
+		(drawPoints.frontUp + drawPoints.frontDown) / 2,
+		rotation - PI/2, rotation + PI/2,
+		shootingVelocity / 4, shootingVelocity,
+		0, 0,
+		0, 0,
+		20, 50,
+		0.05f, 0.2f,
+		ORANGE,
+	};
+	particleManager.CreateSpawner(20, 0.2f, params);
 	
-	projectiles.push_back(new CannonBall(position, Maths::Vector2(rotation, shootingVelocity, true), groundHeight));
+	projectiles.push_back(new CannonBall(particleManager, position, Maths::Vector2(rotation, shootingVelocity, true), airTime, groundHeight));
 	if (projectiles.size() > 4)
 	{
 		for (size_t i = 0; i < projectiles.size(); i++)

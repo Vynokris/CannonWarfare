@@ -1,14 +1,16 @@
 #pragma once
-#include "Vector2.h"
+#include "Transform2D.h"
 #include <raylib.h>
 #include <chrono>
+
+class ParticleManager;
 
 class CannonBall
 {
 private:
-	Maths::Vector2 position;
-	Maths::Vector2 velocity;
-	Maths::Vector2 acceleration;
+	ParticleManager& particleManager;
+	
+	Maths::Transform2D transform;
 	float weight = 4.f, radius = 0.05f, elasticity = 0.2f;
 	const float& groundHeight;
 
@@ -19,7 +21,7 @@ private:
 	std::chrono::system_clock::time_point startTime, endTime;
 	float airTime = 0;
 
-	Color color = { 0, 255, 255, 255 };
+	Color color = MAGENTA;
 	float trajectoryAlpha = 0.f;
 	float destroyDuration = 1.f, destroyTimer = 1000.f;
 
@@ -31,7 +33,7 @@ private:
 	void UpdateTrajectory();
 
 public:
-	CannonBall(const Maths::Vector2& startPosition, const Maths::Vector2& startVelocity, const float& _groundHeight);
+	CannonBall(ParticleManager& _particleManager, const Maths::Vector2& startPosition, const Maths::Vector2& startVelocity, const float& predictedAirTime, const float& _groundHeight);
 
 	void Update(const float& deltaTime);
 	void Draw() const;
