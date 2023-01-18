@@ -1,6 +1,7 @@
 #pragma once
 #include "Cannon.h"
 #include "Star.h"
+#include "ParticleManager.h"
 #include <chrono>
 
 constexpr size_t STAR_COUNT = 100;
@@ -20,6 +21,8 @@ private:
 	Cannon cannon;
 	float  groundHeight;
 
+	ParticleManager* particleManager;
+
 	void DrawUi();
 
 public:
@@ -37,4 +40,6 @@ public:
 	float          GetTargetDeltaTime() const { return targetDeltaTime;   }
 	
 	static float GetTimeSinceStart();
+	
+	ParticleManager* GetParticleManager() const { return particleManager; } 
 };

@@ -1,8 +1,9 @@
 #pragma once
 
+#pragma region Custom Includes
 #include "raylib.h"
 #include "Maths/Vector2.h"
-#include <vector>
+#pragma endregion
 
 class Particle
 {
@@ -21,15 +22,19 @@ private:
 
 	float rotation;
 	float size;
-	float acceleration;
 	float friction;
 
 	Color color;
 
 public:
 	Particle(const Shape& _shape, const Maths::Vector2& _position, const Maths::Vector2& _velocity,
-			 const float& _rotation, const float& _size, const float& _acceleration, const float& _friction, const Color& _color);
-	~Particle();
+			 const float& _rotation, const float& _size, const float& _friction, const Color& _color);
+
+	Particle(const Particle* particle);
+	~Particle() = default;
+
+	void Draw();
+	void Update(const float& deltaTime);
 
 	void SetVelocity(const Maths::Vector2& _velocity) { velocity = _velocity; }
 	void SetPosition(const Maths::Vector2& _position) { position = _position; }
@@ -37,12 +42,13 @@ public:
 
 	Maths::Vector2 GetPosition() const { return position; }
 	Maths::Vector2 GetVelocity() const { return velocity; }
-
-	float GetAcceleration() const { return acceleration; }
+	
 	float GetFriction()		const { return friction;	 }
 	float GetRotation()		const { return rotation;	 }
 	float GetSize()			const { return size;		 }
 
 	Color GetColor() const { return color; }
 	Shape GetShape() const { return shape; }
+
+	bool IsOutdated() const { return GetSize() <= 0; }
 };

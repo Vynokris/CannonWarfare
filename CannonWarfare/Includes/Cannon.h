@@ -3,6 +3,8 @@
 #include "raylib.h"
 #include <vector>
 
+class App;
+
 struct CannonDrawPoints
 {
 	Maths::Vector2 centerUp;
@@ -22,6 +24,7 @@ struct CannonDrawPoints
 class Cannon
 {
 private:
+	App* app;
 	std::vector<CannonBall*> projectiles;
 	const float& groundHeight;
 
@@ -50,7 +53,7 @@ private:
 	void UpdateDrawPoints();
 
 public:
-	Cannon(const float& _groundHeight);
+	Cannon(App* _app, const float& _groundHeight);
 	~Cannon();
 
 	void Update(const float& deltaTime);

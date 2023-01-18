@@ -1,62 +1,48 @@
-#pragma once
-
+#pragma region Linked Includes
 #include "ParticleManager.h"
+#pragma endregion
+
+#pragma region Custom Includes
 #include "RaylibConversions.h"
-#include "raylib.h"
+#pragma endregion
+
+#pragma region Namespaces
 using namespace Maths;
+#pragma endregion
 
-ParticleManager::ParticleManager()
+void ParticleManager::Update(const float& deltaTime)
 {
+    /*
+     * Execute update logic on all available spawners
+     */
+    for(size_t i = 0; i < GetSpawners().size(); i++)
+    {
+        particleSpawners[i]->Update(deltaTime);
+
+        /*
+         * State check of all available spawners
+         *  If spawner marked as destroy, execute destroy logic
+         */
+        if(particleSpawners[i]->ShouldDestroy())
+        {
+            particleSpawners.erase(particleSpawners.begin() + i);
+            i--;
+        }
+    }
 }
 
-ParticleManager::~ParticleManager()
+void ParticleManager::Draw()
 {
+    /*
+     * Execute drawing logic on all available spawners
+     */
+    for(ParticleSpawner* spawner : GetSpawners())
+    {
+        spawner->Draw();
+    }
 }
 
-void ParticleManager::DrawParticles(float deltaTime)
+void ParticleManager::SpawnParticles(Particle* _particle, const int& _spawnRate, const float& _spawnDuration)
 {
-	if (getParticles().size() == 0) return;
-
-	for (size_t i = 0; i < getParticles().size(); i++) {
-		particles[i].SetVelocity(particles[i].GetVelocity() * (1 - particles[i].GetFriction() * deltaTime));
-		particles[i].SetPosition(particles[i].GetPosition() + particles[i].GetVelocity()	  * deltaTime);
-		particles[i].SetSize    (particles[i].GetSize()     * deltaTime						  * 17);
-		
-		switch (particles[i].GetShape())
-		{
-		case Particle::Shape::CIRCLE:
-			DrawCircleV(
-				ToRayVector2(particles[i].GetPosition()),
-				particles[i].GetSize(),
-				particles[i].GetColor()
-			); break;
-		case Particle::Shape::LINE:
-			DrawLineEx(
-				ToRayVector2(particles[i].GetPosition()),
-				ToRayVector2(particles[i].GetPosition() - particles[i].GetVelocity().GetNormalized() * particles[i].GetSize()),
-				2, 
-				particles[i].GetColor()
-			); break;
-		case Particle::Shape::SQUARE:
-			const Rectangle rectangle = Rectangle{
-				particles[i].GetPosition().x - particles[i].GetSize() / 2,
-				particles[i].GetPosition().y - particles[i].GetSize() / 2,
-				particles[i].GetSize(),
-				particles[i].GetSize()
-			};
-
-			DrawRectanglePro(
-				rectangle,
-				ToRayVector2(Maths::Vector2()),
-				particles[i].GetRotation() * 180 / PI,
-				particles[i].GetColor()
-			);  break;
-		default:
-			break;
-		}
-
-		if (particles[i].GetSize() <= 0) {
-			particles.erase(particles.begin() + i); i--;
-		}
-	}
+    particleSpawners.emplace_back(new ParticleSpawner(_particle, _spawnRate, _spawnDuration));
 }
