@@ -10,12 +10,8 @@ private:
     int* lines;
 
 public:
-    Sprite(Maths::Vector2* _verticies, int* _lines)
-        : verticies(_verticies), lines(_lines)
-    {
-    }
-
-    ~Sprite() {};
+    Sprite(Maths::Vector2* _verticies, int* _lines) : verticies(_verticies), lines(_lines) {}
+    ~Sprite() {}
 };
 
 static class Sprites

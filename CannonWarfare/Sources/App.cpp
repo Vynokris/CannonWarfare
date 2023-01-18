@@ -42,6 +42,8 @@ App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
     cannon.SetPosition({ 90, screenSize.y - 150 });
     cannon.SetRotation(-PI / 5);
     cannon.SetShootingVelocity(900);
+
+    particleManager = new ParticleManager();
 }
 
 App::~App()

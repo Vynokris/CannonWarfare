@@ -2,6 +2,8 @@
 #include "Cannon.h"
 #include <chrono>
 
+#include "ParticleManager.h"
+
 class App
 {
 private:
@@ -12,6 +14,8 @@ private:
 
 	Cannon cannon;
 	float  groundHeight;
+
+	ParticleManager* particleManager;
 
 	void DrawUi();
 
