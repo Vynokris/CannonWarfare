@@ -31,7 +31,7 @@ public:
 			 const float& _rotation, const float& _size, const float& _friction, const Color& _color);
 
 	Particle(const Particle* particle);
-	~Particle() {}
+	~Particle() = default;
 
 	void Draw();
 	void Update(const float& deltaTime);

@@ -25,7 +25,7 @@ private:
 public:
     // Constructor & Destructor
     ParticleSpawner(Particle* _particle, const int& _spawnRate, const float& _spawnDuration);
-    ~ParticleSpawner() {}
+    ~ParticleSpawner() = default;
 
     // Methods
     void Update(const float& deltaTime);

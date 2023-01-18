@@ -15,11 +15,12 @@ private:
 
 public:
 	// Constructor & Destructor
-	ParticleManager()  {}
-	~ParticleManager() {}
+	ParticleManager()  = default;
+	~ParticleManager() = default;
 
 	// Methods
 	void Update(const float& deltaTime);
+	void Draw();
 	void SpawnParticles(Particle* _particle, const int& _spawnRate, const float& _spawnDuration);
 
 	// Native Types - Getter

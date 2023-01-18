@@ -153,6 +153,7 @@
     <ClInclude Include="Includes\Maths\Vector4.h" />
     <ClInclude Include="Includes\Maths\Vertex.h" />
     <ClInclude Include="Includes\Particle.h" />
+    <ClInclude Include="Includes\ParticleHelper.h" />
     <ClInclude Include="Includes\ParticleManager.h" />
     <ClInclude Include="Includes\ParticleSpawner.h" />
     <ClInclude Include="Includes\Physics\Physics.h" />

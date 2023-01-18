@@ -3,12 +3,13 @@
 #include "PhysicsConstants.h"
 #include "RaylibConversions.h"
 #include <sstream>
-#include <iostream>
 #include <iomanip>
+
+#include "ParticleHelper.h"
 using namespace Maths;
 
-Cannon::Cannon(const float& _groundHeight)
-	   : groundHeight(_groundHeight)
+Cannon::Cannon(App* _app, const float& _groundHeight)
+	   : app(_app), groundHeight(_groundHeight)
 {
 }
 
@@ -173,6 +174,11 @@ void Cannon::DrawMeasurements() const
 
 void Cannon::Shoot()
 {
+	Particle* particle = new Particle(ParticlesHelper::LINE);
+	particle->SetPosition(position);
+	particle->SetVelocity(Maths::Vector2(rotation, shootingVelocity, true));
+	app->GetParticleManager()->SpawnParticles(particle, 5, 2);
+	
 	projectiles.push_back(new CannonBall(position, Maths::Vector2(rotation, shootingVelocity, true), groundHeight));
 	if (projectiles.size() > 4)
 	{

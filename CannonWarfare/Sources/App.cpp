@@ -2,12 +2,11 @@
 #include "RaylibConversions.h"
 #include <rlImGui.h>
 
-#include "PhysicsConstants.h"
 using namespace Maths;
 
 
 App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
-    : screenSize(_screenSize), targetFPS(_targetFPS), targetDeltaTime(1.f / targetFPS), cannon(groundHeight)
+    : screenSize(_screenSize), targetFPS(_targetFPS), targetDeltaTime(1.f / targetFPS), cannon(this, groundHeight)
 {
     startTime = std::chrono::system_clock::now();
 
@@ -63,6 +62,7 @@ float App::GetTimeSinceStart()
 void App::Update(const float& deltaTime)
 {
     cannon.Update(deltaTime);
+    particleManager->Update(deltaTime);
 }
 
 void App::Draw()
@@ -75,6 +75,7 @@ void App::Draw()
         DrawRectangle(0, (int)groundHeight, (int)screenSize.x, (int)(screenSize.y - groundHeight), BLACK);
         cannon.DrawMeasurements();
         DrawLine(0, (int)groundHeight, (int)screenSize.x, (int)groundHeight, WHITE);
+        particleManager->Draw();
         DrawUi();
     }
     EndDrawing();

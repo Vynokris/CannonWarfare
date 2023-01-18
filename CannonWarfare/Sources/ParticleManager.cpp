@@ -31,6 +31,17 @@ void ParticleManager::Update(const float& deltaTime)
     }
 }
 
+void ParticleManager::Draw()
+{
+    /*
+     * Execute drawing logic on all available spawners
+     */
+    for(ParticleSpawner* spawner : GetSpawners())
+    {
+        spawner->Draw();
+    }
+}
+
 void ParticleManager::SpawnParticles(Particle* _particle, const int& _spawnRate, const float& _spawnDuration)
 {
     particleSpawners.emplace_back(new ParticleSpawner(_particle, _spawnRate, _spawnDuration));

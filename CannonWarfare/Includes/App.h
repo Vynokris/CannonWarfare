@@ -34,4 +34,6 @@ public:
 	float          GetTargetDeltaTime() const { return targetDeltaTime;   }
 	
 	static float GetTimeSinceStart();
+	
+	ParticleManager* GetParticleManager() const { return particleManager; } 
 };

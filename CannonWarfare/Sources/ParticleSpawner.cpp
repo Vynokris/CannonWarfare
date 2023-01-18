@@ -1,5 +1,7 @@
 ﻿#pragma region Linked Includes
 #include "ParticleSpawner.h"
+
+#include <iostream>
 #pragma endregion
 
 ParticleSpawner::ParticleSpawner(Particle* _particle, const int& _spawnRate, const float& _spawnDuration)
