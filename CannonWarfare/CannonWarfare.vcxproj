@@ -109,7 +109,7 @@
       <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE; _CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Includes;C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Includes\Maths;C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Includes\Physics;C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Externals;C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Externals\raylib;C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Externals\imgui;C:\Users\r.serra\Documents\Projects\CannonWarfare\CannonWarfare\Externals\rlimgui;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Includes;$(ProjectDir)Includes\Maths;$(ProjectDir)Includes\Physics;$(ProjectDir)Externals;$(ProjectDir)Externals\raylib;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\rlimgui;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>26451;</DisableSpecificWarnings>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>

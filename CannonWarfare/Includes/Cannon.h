@@ -3,6 +3,8 @@
 #include "raylib.h"
 #include <vector>
 
+constexpr int MAX_PROJECTILES = 500;
+
 class ParticleManager;
 
 struct CannonDrawPoints

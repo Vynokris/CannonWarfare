@@ -199,7 +199,7 @@ void Cannon::Shoot()
 	particleManager.CreateSpawner(20, 0.2f, params);
 	
 	projectiles.push_back(new CannonBall(particleManager, position, Maths::Vector2(rotation, shootingVelocity, true), airTime, groundHeight));
-	if (projectiles.size() > 4)
+	if (projectiles.size() > MAX_PROJECTILES)
 	{
 		for (size_t i = 0; i < projectiles.size(); i++)
 		{

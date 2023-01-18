@@ -11,7 +11,7 @@ private:
 	ParticleManager& particleManager;
 	
 	Maths::Transform2D transform;
-	float weight = 4.f, radius = 0.05f, elasticity = 0.2f;
+	float weight = 4.f, radius = 0.05f, elasticity = 0.25f;
 	const float& groundHeight;
 
 	bool landed = false;
