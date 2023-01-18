@@ -33,6 +33,10 @@ void CannonBall::UpdateTrajectory()
 
 void CannonBall::Update(const float& deltaTime)
 {
+	// Update alphas depending on what is shown.
+	if      ( showTrajectory && trajectoryAlpha < 1.f) trajectoryAlpha = clamp(trajectoryAlpha + deltaTime, 0, 1);
+	else if (!showTrajectory && trajectoryAlpha > 0.f) trajectoryAlpha = clamp(trajectoryAlpha - deltaTime, 0, 1);
+	
 	// If the cannonball is above the ground, update its velocity and position.
 	if (position.y < groundHeight - radius * PIXEL_SCALE)
 	{
@@ -82,20 +86,21 @@ void CannonBall::Draw() const
 	// Draw the cannonball.
 	DrawCircle((int)position.x, (int)position.y, radius * PIXEL_SCALE, BLACK);
 	DrawCircleLines((int)position.x, (int)position.y, radius * PIXEL_SCALE, color);
+
+	// Get the current trajectory color.
+	const Color curColor = { color.r, color.g, color.b, (unsigned char)min(trajectoryAlpha * 255, color.a) };
+	
+	// Draw air time.
+	std::stringstream textValue; textValue << std::fixed << std::setprecision(2) << airTime << "s";
+	const Maths::Vector2 textPos = { position.x - MeasureText(textValue.str().c_str(), 20) / 2.f, position.y - 10 };
+	DrawText(textValue.str().c_str(), (int)textPos.x, (int)textPos.y, 20, curColor);
 }
 
 void CannonBall::DrawTrajectory() const
 {
 	// Draw the trajectory with a bezier curve.
-	DrawLineBezierQuad(ToRayVector2(startPos), ToRayVector2(endPos), ToRayVector2(controlPoint), 1, color);
-}
-
-void CannonBall::DrawAirTime() const
-{
-	// Draw air time.
-	std::stringstream textValue; textValue << std::fixed << std::setprecision(2) << airTime << "s";
-	const Maths::Vector2 textPos = { position.x - MeasureText(textValue.str().c_str(), 20) / 2.f, position.y - 10 };
-	DrawText(textValue.str().c_str(), (int)textPos.x, (int)textPos.y, 20, color);
+	const Color curColor = { color.r, color.g, color.b, (unsigned char)min(trajectoryAlpha * 255, color.a) };
+	DrawLineBezierQuad(ToRayVector2(startPos), ToRayVector2(endPos), ToRayVector2(controlPoint), 1, curColor);
 }
 
 void CannonBall::Destroy()

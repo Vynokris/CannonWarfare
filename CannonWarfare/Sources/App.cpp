@@ -1,4 +1,5 @@
 #include "App.h"
+#include "Graphics.h"
 #include "RaylibConversions.h"
 #include <rlImGui.h>
 
@@ -35,6 +36,14 @@ App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
     #endif
     */
 
+    // Initialize the app graphics.
+    graphics = new Graphics(screenSize);
+
+    // Initialize the stars.
+    stars.reserve(STAR_COUNT);
+    for (size_t i = 0; i < STAR_COUNT; ++i)
+        stars.emplace_back(screenSize);
+
     // Set the ground height.
     groundHeight = screenSize.y - 100;
 
@@ -46,6 +55,7 @@ App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
 
 App::~App()
 {
+    delete graphics;
     ImGui::SaveIniSettingsToDisk("Resources/imgui.ini");
     ShutdownRLImGui();
     CloseWindow();
@@ -60,22 +70,25 @@ float App::GetTimeSinceStart()
 
 void App::Update(const float& deltaTime)
 {
+    for (Star& star : stars)
+        star.Update(deltaTime);
     cannon.Update(deltaTime);
 }
 
 void App::Draw()
 {
-    BeginDrawing();
+    graphics->BeginDrawing();
     {
         ClearBackground(BLACK);
+        for (const Star& star : stars) star.Draw(); // Draw stars.
         cannon.DrawTrajectories();
         cannon.Draw();
-        DrawRectangle(0, (int)groundHeight, (int)screenSize.x, (int)(screenSize.y - groundHeight), BLACK);
+        DrawRectangle(0, (int)groundHeight, (int)screenSize.x, (int)(screenSize.y - groundHeight), BLACK); // Draw ground.
         cannon.DrawMeasurements();
-        DrawLine(0, (int)groundHeight, (int)screenSize.x, (int)groundHeight, WHITE);
+        DrawLine(0, (int)groundHeight, (int)screenSize.x, (int)groundHeight, WHITE); // Draw ground top.
         DrawUi();
     }
-    EndDrawing();
+    graphics->EndDrawing();
 }
 
 void App::DrawUi()
@@ -83,12 +96,16 @@ void App::DrawUi()
     BeginRLImGui();
     {
         // Stats window.
-        if (ImGui::Begin("Stats", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+        if (ImGui::Begin("Stats", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::SetWindowPos({ screenSize.x - ImGui::GetWindowWidth(), 1 });
             const int fps = GetFPS();
             ImGui::Text("FPS: %d", fps);
             ImGui::Text("Delta Time: %.3f", 1.f / fps);
+            
+            ImGui::Checkbox("Show predicted trajectory", &cannon.showTrajectory);
+            ImGui::Checkbox("Show predicted measurements", &cannon.showMeasurements);
+            ImGui::Checkbox("Show cannonball trajectories", &cannon.showProjectileTrajectories);
         }
         ImGui::End();
 

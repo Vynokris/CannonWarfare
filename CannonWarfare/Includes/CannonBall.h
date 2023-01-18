@@ -19,9 +19,14 @@ private:
 	std::chrono::system_clock::time_point startTime, endTime;
 	float airTime = 0;
 
-	Color color = SKYBLUE;
+	Color color = { 0, 255, 255, 255 };
+	float trajectoryAlpha = 0.f;
 	float destroyDuration = 1.f, destroyTimer = 1000.f;
 
+public:
+	bool showTrajectory = false;
+
+private:
 	Maths::Vector2 ComputeDrag() const;
 	void UpdateTrajectory();
 
@@ -31,7 +36,6 @@ public:
 	void Update(const float& deltaTime);
 	void Draw() const;
 	void DrawTrajectory() const;
-	void DrawAirTime() const;
 
 	void Destroy();
 	bool IsDestroying() const { return 0.f < destroyTimer && destroyTimer < destroyDuration; }

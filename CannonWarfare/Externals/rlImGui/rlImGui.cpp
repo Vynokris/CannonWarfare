@@ -326,7 +326,7 @@ static void rlRenderData(ImDrawData* data)
 
         for (const auto& cmd : commandList->CmdBuffer)
         {
-            EnableScissor(cmd.ClipRect.x - data->DisplayPos.x, cmd.ClipRect.y - data->DisplayPos.y, cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x), cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y));
+            // EnableScissor(cmd.ClipRect.x - data->DisplayPos.x, cmd.ClipRect.y - data->DisplayPos.y, cmd.ClipRect.z - (cmd.ClipRect.x - data->DisplayPos.x), cmd.ClipRect.w - (cmd.ClipRect.y - data->DisplayPos.y));
             if (cmd.UserCallback != nullptr)
             {
                 cmd.UserCallback(commandList, &cmd);

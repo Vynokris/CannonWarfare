@@ -39,6 +39,12 @@ float Maths::clampUnder(float val, const float& max) { if (val > max) val = max;
 // Clamps the given value to be superior or equal to the minimum value.
 float Maths::clampAbove(float val, const float& min) { if (val < min) val = min; return val; }
 
+// Returns the minimum value between the two parameters.
+float Maths::min(const float& val1, const float& val2) { return (val1 <= val2 ? val1 : val2); }
+
+// Returns the maximum value between the two parameters.
+float Maths::max(const float& val1, const float& val2) { return (val1 >= val2 ? val1 : val2); }
+
 // Compute linear interpolation between start and dest for the parameter val (if 0 <= val <= 1: start <= return <= end).
 float Maths::lerp(const float& start, const float& dest, const float& val)
 {

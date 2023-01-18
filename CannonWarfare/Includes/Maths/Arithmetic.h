@@ -32,6 +32,12 @@ namespace Maths
     // Clamps the given value to be superior or equal to the minimum value.
     float clampAbove(float val, const float& min);
 
+    // Returns the minimum value between the two parameters.
+    float min(const float& val1, const float & val2);
+
+    // Returns the maximum value between the two parameters.
+    float max(const float& val1, const float & val2);
+
     // Compute linear interpolation between start and dest for the parameter val (if 0 <= val <= 1: start <= return <= end).
     float lerp(const float& start, const float& dest, const float& val);
 

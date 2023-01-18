@@ -1,15 +1,22 @@
 #pragma once
 #include "Cannon.h"
+#include "Star.h"
 #include <chrono>
+
+constexpr size_t STAR_COUNT = 100;
+class Graphics;
 
 class App
 {
 private:
 	static inline std::chrono::system_clock::time_point startTime;
+	
 	Maths::Vector2 screenSize;
-	int   targetFPS;
-	float targetDeltaTime;
+	int            targetFPS;
+	float          targetDeltaTime;
+	Graphics*      graphics;
 
+	std::vector<Star> stars;
 	Cannon cannon;
 	float  groundHeight;
 

@@ -76,12 +76,23 @@ void Cannon::UpdateDrawPoints()
 
 void Cannon::Update(const float& deltaTime)
 {
+	// Automatically update cannon rotation.
 	if (automaticRotation)
 		SetRotation((sin(App::GetTimeSinceStart() * 0.25f) * 0.5f + 0.5f) * (-PI/3) - PI/8);
 
+	// Update alphas depending on what is shown.
+	if      ( showTrajectory   && trajectoryAlpha   < 1.f) trajectoryAlpha   = clamp(trajectoryAlpha   + deltaTime, 0, 1);
+	else if (!showTrajectory   && trajectoryAlpha   > 0.f) trajectoryAlpha   = clamp(trajectoryAlpha   - deltaTime, 0, 1);
+	if      ( showMeasurements && measurementsAlpha < 1.f) measurementsAlpha = clamp(measurementsAlpha + deltaTime, 0, 1);
+	else if (!showMeasurements && measurementsAlpha > 0.f) measurementsAlpha = clamp(measurementsAlpha - deltaTime, 0, 1);
+
+	// Update projectiles.
 	for (size_t i = 0; i < projectiles.size(); i++) 
 	{
 		projectiles[i]->Update(deltaTime);
+
+		if (projectiles[i]->showTrajectory != showProjectileTrajectories)
+			projectiles[i]->showTrajectory  = showProjectileTrajectories;
 
 		// Delete any projectile that has finished destroying itself.
 		if (projectiles[i]->IsDestroyed()) {
@@ -95,10 +106,8 @@ void Cannon::Update(const float& deltaTime)
 void Cannon::Draw() const
 {
 	// Draw the cannonballs.
-	for (const CannonBall* projectile : projectiles) {
+	for (const CannonBall* projectile : projectiles)
 		projectile->Draw();
-		projectile->DrawAirTime();
-	}
 	
 	// Draw the back semi-circle.
 	const float degRot = radToDeg(rotation) + 90;
@@ -136,7 +145,15 @@ void Cannon::Draw() const
 void Cannon::DrawTrajectories() const
 {
 	// Draw the trajectory.
-	DrawLineBezierQuad(ToRayVector2(position), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, trajectoryColor);
+	const Color curTrajectoryColor = { trajectoryColor.r, trajectoryColor.g, trajectoryColor.b, (unsigned char)(trajectoryAlpha * 255) };
+	DrawLineBezierQuad(ToRayVector2(position), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, curTrajectoryColor);
+
+	// Draw the air time text.
+	{
+		std::stringstream textValue; textValue << std::fixed << std::setprecision(2) << airTime << "s";
+		const Maths::Vector2 textPos = { controlPoint.x - MeasureText(textValue.str().c_str(), 30) / 2.f, position.y - maxHeight - 35 };
+		DrawText(textValue.str().c_str(), (int)textPos.x, (int)textPos.y, 30, curTrajectoryColor);
+	}
 	
 	// Draw the cannonball trajectories.
 	for (const CannonBall* projectile : projectiles)
@@ -147,27 +164,22 @@ void Cannon::DrawMeasurements() const
 {
 	// Draw the landing distance.
 	{
-		DrawLine((int)position.x, (int)groundHeight + 20, (int)(position.x + landingDistance), (int)groundHeight + 20, landingDistanceColor);
-		DrawPoly({ position.x                   + 12, groundHeight + 20 }, 3, 12,  90, landingDistanceColor);
-		DrawPoly({ position.x + landingDistance - 12, groundHeight + 20 }, 3, 12, -90, landingDistanceColor);
+		const Color curColor = { landingDistanceColor.r, landingDistanceColor.g, landingDistanceColor.b, (unsigned char)(measurementsAlpha * 255) };
+		DrawLine((int)position.x, (int)groundHeight + 20, (int)(position.x + landingDistance), (int)groundHeight + 20, curColor);
+		DrawPoly({ position.x                   + 12, groundHeight + 20 }, 3, 12,  90, curColor);
+		DrawPoly({ position.x + landingDistance - 12, groundHeight + 20 }, 3, 12, -90, curColor);
 		std::stringstream textValue; textValue << std::fixed << std::setprecision(0) << landingDistance << "px";
-		DrawText(textValue.str().c_str(), (int)(position.x + landingDistance / 2 - MeasureText(textValue.str().c_str(), 20) / 2.f), (int)groundHeight + 30, 20, landingDistanceColor);
+		DrawText(textValue.str().c_str(), (int)(position.x + landingDistance / 2 - MeasureText(textValue.str().c_str(), 30) / 2.f), (int)groundHeight + 30, 30, curColor);
 	}
 
 	// Draw the maximum height.
 	{
-		DrawLine(30, (int)position.y, 30, (int)(position.y - maxHeight), maxHeightColor);
-		DrawPoly({ 30, position.y             - 12 }, 3, 12,   0, maxHeightColor);
-		DrawPoly({ 30, position.y - maxHeight + 12 }, 3, 12, 180, maxHeightColor);
+		const Color curColor = { maxHeightColor.r, maxHeightColor.g, maxHeightColor.b, (unsigned char)(measurementsAlpha * 255) };
+		DrawLine(30, (int)position.y, 30, (int)(position.y - maxHeight), curColor);
+		DrawPoly({ 30, position.y             - 12 }, 3, 12,   0, curColor);
+		DrawPoly({ 30, position.y - maxHeight + 12 }, 3, 12, 180, curColor);
 		std::stringstream textValue; textValue << std::fixed << std::setprecision(0) << maxHeight << "px";
-		DrawText(textValue.str().c_str(), 15, (int)(position.y - maxHeight) - 25, 20, maxHeightColor);
-	}
-
-	// Draw the air time text.
-	{
-		std::stringstream textValue; textValue << std::fixed << std::setprecision(2) << airTime << "s";
-		const Maths::Vector2 textPos = { controlPoint.x - MeasureText(textValue.str().c_str(), 20) / 2.f, position.y - maxHeight - 30 };
-		DrawText(textValue.str().c_str(), (int)textPos.x, (int)textPos.y, 20, trajectoryColor);
+		DrawText(textValue.str().c_str(), 15, (int)(position.y - maxHeight) - 30, 30, curColor);
 	}
 }
 
@@ -190,5 +202,8 @@ void Cannon::Shoot()
 void Cannon::ClearProjectiles() const
 {
 	for (CannonBall* projectile : projectiles)
-		projectile->Destroy();
+	{
+		if (!projectile->IsDestroying())
+			projectile->Destroy();
+	}
 }

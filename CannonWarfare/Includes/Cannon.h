@@ -34,15 +34,22 @@ private:
 	Color trajectoryColor      = MAGENTA;
 	Color landingDistanceColor = GREEN;
 	Color maxHeightColor       = RED;
+	float trajectoryAlpha      = 1.f;
+	float measurementsAlpha    = 1.f;
 
 	CannonDrawPoints drawPoints;
 
+public:
+	bool automaticRotation = true;
+	bool showTrajectory    = true;
+	bool showMeasurements  = true;
+	bool showProjectileTrajectories = true;
+	
+private:
 	void UpdateTrajectory();
 	void UpdateDrawPoints();
 
 public:
-	bool automaticRotation = true;
-
 	Cannon(const float& _groundHeight);
 	~Cannon();
 

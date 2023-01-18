@@ -97,8 +97,8 @@ std::string Vector2::ToString(const int& precision) const
 
 Vector2 Maths::LineIntersection(const Vector2& origin1, const Vector2& dir1, const Vector2& origin2, const Vector2& dir2)
 {
-	Vector2 diff = origin2 - origin1;
-	float cross = dir1.Cross(dir2);
-	float coeff = diff.Cross(dir2) / cross;
+	const Vector2 diff = origin2 - origin1;
+	const float cross = dir1.Cross(dir2);
+	const float coeff = diff.Cross(dir2) / cross;
 	return origin1 + dir1 * coeff;
 }
