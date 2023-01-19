@@ -6,8 +6,8 @@ using namespace Maths;
 
 static float RandFloatInBounds(const float& min, const float& max)
 {
-    if (min == max) return min;
-    return (rand() % (int)(max * 100 - min * 100) + (int)(min * 100)) / 100.f;
+    if (max - min <= 0.001f) return min;
+    return (float)(rand() % (int)clampAbove(max * 100 - min * 100, 1.f) + (int)(min * 100)) / 100.f;
 }
 
 ParticleSpawner::ParticleSpawner(ParticleManager& _particleManager, const int& _spawnRate, const float& _spawnDuration, const SpawnerParticleParams& _params, const Transform2D* _parentTransform)

@@ -56,6 +56,13 @@ void Cannon::UpdateTrajectory()
     maxHeight = clampAbove(position.y - (position * sqpow(1-0.5f) + controlPoint * 2*(1-0.5f)*0.5f + landingPosition * sqpow(0.5f)).y, 0); // TODO: This is broken with non-0 height.
 }
 
+void Cannon::UpdateCollisions(CannonBall* cannonBall) const
+{
+    for (CannonBall* projectile : projectiles)
+        if (cannonBall != projectile)
+            cannonBall->CheckCollisions(projectile);
+}
+
 void Cannon::UpdateDrawPoints()
 {
     drawParams.centerUp   = position               + Maths::Vector2(rotation-PI/2, 40, true);
@@ -88,6 +95,8 @@ void Cannon::Update(const float& deltaTime)
     // Update projectiles.
     for (size_t i = 0; i < projectiles.size(); i++) 
     {
+        if (applyCollisions)
+            UpdateCollisions(projectiles[i]);
         projectiles[i]->Update(deltaTime);
 
         // Set all projectiles to show/hide their trajectory.

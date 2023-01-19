@@ -97,11 +97,12 @@ void CannonBall::Update(const float& deltaTime)
 		}
 
 		// Play landing particles.
+		const float v = transform.velocity.GetLength();
 		const SpawnerParticleParams params = {
 			ParticleShapes::POLYGON,
 			transform.position + Maths::Vector2(0, radius * 1.5f),
 			-PI/4, PI+PI/2,
-			250, 500,
+			v, 5 * v,
 			0, 0,
 			0, 0,
 			20, 35,
@@ -116,6 +117,59 @@ void CannonBall::Update(const float& deltaTime)
 	{
 		destroyTimer -= deltaTime;
 		color.a = (unsigned char)(255 * (destroyTimer / destroyDuration));
+	}
+}
+
+void CannonBall::CheckCollisions(CannonBall* other)
+{
+	const Maths::Vector2 selfToOther = Maths::Vector2(transform.position, other->transform.position);
+	const Maths::Vector2 dirToOther  = selfToOther.GetNormalized();
+	const float          distToOther = selfToOther.GetLength();
+	
+	if (distToOther <= radius + other->radius)
+	{
+		// Get the masses of the projectiles.
+		const float m1 = this ->mass;
+		const float m2 = other->mass;
+
+		// Get the initial velocities of the projectiles.
+		const Maths::Vector2 v1i = this ->transform.velocity;
+		const Maths::Vector2 v2i = other->transform.velocity;
+
+		// Compute the final velocities of the projectiles.
+		const Maths::Vector2 v1f = (v1i * (m1-m2) + v2i * (m2*2)) / (m1+m2);
+		const Maths::Vector2 v2f = (v2i * (m2-m1) + v1i * (m1*2)) / (m1+m2);
+
+		// Reset the projectiles' acceleration.
+		this ->transform.acceleration = { 0, GRAVITY };
+		other->transform.acceleration = { 0, GRAVITY };
+
+		// Set the projectiles' velocities to the final velocities.
+		this ->transform.velocity = v1f;
+		other->transform.velocity = v2f;
+
+		// Move the projectiles out of each other.
+		this ->transform.position += dirToOther * (distToOther - (radius + other->radius)) / 2;
+		other->transform.position -= dirToOther * (distToOther - (radius + other->radius)) / 2;
+
+		// Tell the projectiles they have collided and should stop drawing their trajectory.
+		if (!this ->landed) this ->collided = true;
+		if (!other->landed) other->collided = true;
+
+		// Play collision particles.
+		const float v = (transform.velocity.GetLength() + other->transform.velocity.GetLength()) / 2;
+		const SpawnerParticleParams params = {
+			ParticleShapes::LINE,
+			transform.position + dirToOther * radius,
+			0, 2*PI,
+			v, v*3,
+			0, 0,
+			0, 0,
+			v/50, v/10,
+			0.05f, 0.2f,
+			color,
+		};
+		particleManager.CreateSpawner(5, 0.1f, params);
 	}
 }
 
@@ -137,9 +191,12 @@ void CannonBall::Draw() const
 void CannonBall::DrawTrajectory() const
 {
 	// Draw the trajectory with a bezier curve.
-	const Color curColor = { color.r, color.g, color.b, (unsigned char)min(trajectoryAlpha * 255, color.a) };
-	DrawLineBezierQuad(ToRayVector2(startPos), ToRayVector2(endPos), ToRayVector2(controlPoint), 1, curColor);
-	DrawPoly(ToRayVector2(endPos), 3, 12, radToDeg(endV.GetAngle()) - 90, curColor);
+	if (!collided)
+	{
+		const Color curColor = { color.r, color.g, color.b, (unsigned char)min(trajectoryAlpha * 255, color.a) };
+		DrawLineBezierQuad(ToRayVector2(startPos), ToRayVector2(endPos), ToRayVector2(controlPoint), 1, curColor);
+		DrawPoly(ToRayVector2(endPos), 3, 12, radToDeg(endV.GetAngle()) - 90, curColor);
+	}
 }
 
 void CannonBall::Destroy()

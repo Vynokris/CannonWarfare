@@ -52,12 +52,14 @@ private:
 public:
 	bool automaticRotation = true;
 	bool applyDrag         = false;
+	bool applyCollisions   = false;
 	bool showTrajectory    = true;
 	bool showMeasurements  = true;
 	bool showProjectileTrajectories = true;
 	
 private:
 	void UpdateTrajectory();
+	void UpdateCollisions(CannonBall* cannonBall) const;
 	void UpdateDrawPoints();
 
 public:
