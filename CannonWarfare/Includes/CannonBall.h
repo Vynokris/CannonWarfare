@@ -11,7 +11,7 @@ private:
 	ParticleManager& particleManager;
 	
 	Maths::Transform2D transform;
-	float weight = 4.f, radius = 0.05f, elasticity = 0.25f;
+	float weight = 4.f, radius = 30.f, elasticity = 0.25f;
 	const float& groundHeight;
 
 	bool landed = false;
@@ -27,6 +27,7 @@ private:
 
 public:
 	bool showTrajectory = false;
+	bool applyDrag      = false;
 
 private:
 	Maths::Vector2 ComputeDrag() const;

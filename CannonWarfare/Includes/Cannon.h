@@ -7,8 +7,17 @@ constexpr int MAX_PROJECTILES = 500;
 
 class ParticleManager;
 
-struct CannonDrawPoints
+struct CannonDrawParams
 {
+	// Cannon colors.
+	Color cannonColor          = { 0, 255, 255, 255 };
+	Color trajectoryColor      = { 0, 255, 255, 255 };
+	Color landingDistanceColor = GREEN;
+	Color maxHeightColor       = RED;
+	float trajectoryAlpha      = 1.f;
+	float measurementsAlpha    = 1.f;
+
+	// Cannon points.
 	Maths::Vector2 centerUp;
 	Maths::Vector2 centerDown;
 	Maths::Vector2 midUp;
@@ -30,23 +39,19 @@ private:
 	std::vector<CannonBall*> projectiles;
 	const float& groundHeight;
 
+	// Cannon properties.
 	Maths::Vector2 position;
 	float rotation = 0, shootingVelocity = 0;
 
+	// Predicted values for cannonballs.
 	Maths::Vector2 landingVelocity, landingPosition, controlPoint;
 	float airTime = 0, maxHeight = 0, landingDistance = 0;
 
-	Color cannonColor          = { 0, 255, 255, 255 };
-	Color trajectoryColor      = { 0, 255, 255, 255 };
-	Color landingDistanceColor = GREEN;
-	Color maxHeightColor       = RED;
-	float trajectoryAlpha      = 1.f;
-	float measurementsAlpha    = 1.f;
-
-	CannonDrawPoints drawPoints;
+	CannonDrawParams drawParams;
 
 public:
 	bool automaticRotation = true;
+	bool applyDrag         = false;
 	bool showTrajectory    = true;
 	bool showMeasurements  = true;
 	bool showProjectileTrajectories = true;

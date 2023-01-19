@@ -28,7 +28,7 @@ void Particle::Draw() const
 
 void Particle::Update(const float& deltaTime)
 {
+	transform.acceleration += transform.velocity.GetNegated() * friction * deltaTime;
 	transform.Update(deltaTime);
 	size -= 100 * deltaTime;
-	// transform.velocity *= friction * deltaTime;
 }

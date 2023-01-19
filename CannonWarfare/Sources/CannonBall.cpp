@@ -36,8 +36,9 @@ CannonBall::CannonBall(ParticleManager& _particleManager, const Maths::Vector2& 
 
 Maths::Vector2 CannonBall::ComputeDrag() const
 {
-	const float dragCoeff = 0.5f * AIR_DENSITY * SPHERE_DRAG_COEFF * PI * sqpow(radius);
-	return (transform.velocity * transform.velocity.GetLength()) * -dragCoeff;
+	const float dragCoeff = 0.5f * AIR_DENSITY * SPHERE_DRAG_COEFF * PI * sqpow(radius / PIXEL_SCALE) / PIXEL_SCALE;
+	const float velocity  = transform.velocity.GetLength();
+	return (transform.velocity / velocity) * (velocity * velocity) * -dragCoeff;
 }
 
 void CannonBall::UpdateTrajectory()
@@ -55,17 +56,23 @@ void CannonBall::Update(const float& deltaTime)
 	if      ( showTrajectory && trajectoryAlpha < 1.f) trajectoryAlpha = clamp(trajectoryAlpha + deltaTime, 0, 1);
 	else if (!showTrajectory && trajectoryAlpha > 0.f) trajectoryAlpha = clamp(trajectoryAlpha - deltaTime, 0, 1);
 	
-	// If the cannonball is above the ground, update its velocity and position.
-	if (transform.position.y < groundHeight - radius * PIXEL_SCALE)
+	// If the cannonball is above the ground, update its acceleration, velocity, position and trajectory.
+	if (transform.position.y < groundHeight - radius)
 	{
+		if (applyDrag && !landed)
+			transform.acceleration += ComputeDrag();
+		
 		transform.Update(deltaTime);
 
-		if (!landed) UpdateTrajectory();
+		if (!landed)
+			UpdateTrajectory();
 	}
 
 	// If the cannonball is under the ground...
-	else if (transform.position.y > groundHeight - radius * PIXEL_SCALE)
+	else if (transform.position.y > groundHeight - radius)
 	{
+		transform.acceleration = { 0, GRAVITY };
+		
 		// If it's the first ground it touches the ground, finalize the trajectory values.
 		if (!landed)
 		{
@@ -76,7 +83,7 @@ void CannonBall::Update(const float& deltaTime)
 		// If it still has some velocity, make it bounce.
 		if (transform.velocity.GetLength() > 10)
 		{
-			transform.position.y  = groundHeight - radius * PIXEL_SCALE - 0.01f;
+			transform.position.y  = groundHeight - radius - 0.01f;
 			transform.velocity.y *= -1;
 			transform.velocity.SetLength(transform.velocity.GetLength() * elasticity);
 		}
@@ -84,7 +91,7 @@ void CannonBall::Update(const float& deltaTime)
 		// If it has very little velocity, stop all its movement.
 		else
 		{
-			transform.position.y   = groundHeight - radius * PIXEL_SCALE;
+			transform.position.y   = groundHeight - radius;
 			transform.velocity     = {};
 			transform.acceleration = {};
 		}
@@ -92,7 +99,7 @@ void CannonBall::Update(const float& deltaTime)
 		// Play landing particles.
 		const SpawnerParticleParams params = {
 			ParticleShapes::POLYGON,
-			transform.position + Maths::Vector2(0, radius * PIXEL_SCALE * 1.5f),
+			transform.position + Maths::Vector2(0, radius * 1.5f),
 			-PI/4, PI+PI/2,
 			250, 500,
 			0, 0,
@@ -115,8 +122,8 @@ void CannonBall::Update(const float& deltaTime)
 void CannonBall::Draw() const
 {
 	// Draw the cannonball.
-	DrawCircle     ((int)transform.position.x, (int)transform.position.y, radius * PIXEL_SCALE, BLACK);
-	DrawCircleLines((int)transform.position.x, (int)transform.position.y, radius * PIXEL_SCALE, color);
+	DrawCircle     ((int)transform.position.x, (int)transform.position.y, radius, BLACK);
+	DrawCircleLines((int)transform.position.x, (int)transform.position.y, radius, color);
 
 	// Get the current trajectory color.
 	const Color curColor = { color.r, color.g, color.b, (unsigned char)min(trajectoryAlpha * 255, color.a) };

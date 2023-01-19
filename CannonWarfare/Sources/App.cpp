@@ -26,6 +26,7 @@ App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
     // Setup ImGui.
     SetupRLImGui(true);
     ImGui::GetStyle().WindowRounding = 5.0;
+    ImGui::GetIO().IniFilename = NULL;
     ImGui::LoadIniSettingsFromDisk("Resources/imgui.ini");
 
     /*
@@ -147,6 +148,7 @@ void App::DrawUi()
             ImGui::Text("Air time: %.2f seconds",        cannon.GetAirTime());
             ImGui::Text("Landing distance: %.0f pixels", cannon.GetLandingDistance());
             ImGui::Text("Maximum height: %.0f pixels",   cannon.GetMaxHeight());
+            ImGui::Checkbox("Apply drag", &cannon.applyDrag);
         }
         ImGui::End();
     }
