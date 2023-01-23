@@ -80,10 +80,9 @@ void App::Draw()
 {
     graphics->BeginDrawing();
     {
-        ClearBackground(BLACK);
         for (const Star& star : stars) star.Draw(); // Draw stars.
-        cannon.DrawTrajectories();
         particleManager.Draw();
+        cannon.DrawTrajectories();
         cannon.Draw();
         DrawRectangle(0, (int)groundHeight, (int)screenSize.x, (int)(screenSize.y - groundHeight), BLACK); // Draw ground.
         cannon.DrawMeasurements();
@@ -101,31 +100,32 @@ void App::DrawUi()
         if (ImGui::Begin("Stats", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::SetWindowPos({ screenSize.x - ImGui::GetWindowWidth(), 1 });
-            const int fps = GetFPS();
-            ImGui::Text("FPS: %d", fps);
-            ImGui::Text("Delta Time: %.3f", 1.f / fps);
             
             ImGui::Checkbox("Show predicted trajectory", &cannon.showTrajectory);
             ImGui::Checkbox("Show predicted measurements", &cannon.showMeasurements);
             ImGui::Checkbox("Show cannonball trajectories", &cannon.showProjectileTrajectories);
+            
+            const int fps = GetFPS();
+            ImGui::Text("FPS: %d | Delta Time: %.2f", fps, 1.f / fps);
         }
         ImGui::End();
 
         // Cannon window.
         if (ImGui::Begin("Cannon", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
         {
+            ImGui::SetWindowPos({ screenSize.x / 2.f - ImGui::GetWindowWidth() / 2.f, 1.f });
             ImGui::PushItemWidth(43);
 
             static float shootingVelocity = cannon.GetShootingVelocity();
-            if (ImGui::DragFloat("Shooting Velocity", &shootingVelocity, 10.f, 100.f, 2000.f, "%.0f"))
+            if (ImGui::DragFloat("Shooting Velocity", &shootingVelocity, 1.f, 100.f, 2000.f, "%.0f"))
                 cannon.SetShootingVelocity(shootingVelocity);
 
             static float height = 0;
-            if (ImGui::DragFloat("Height", &height, 1.f, 0.f, screenSize.y - 250, "%.0f"))
+            if (ImGui::DragFloat("Height", &height, 0.5f, 0.f, screenSize.y - 250, "%.0f"))
                 cannon.SetPosition({ cannon.GetPosition().x, screenSize.y - 150 - height });
 
             static float rotation = -radToDeg(cannon.GetRotation());
-            if (!cannon.automaticRotation && ImGui::DragFloat("Rotation", &rotation, 1.f, -90.f, 90.f, "%.0f"))
+            if (!cannon.automaticRotation && ImGui::DragFloat("Rotation", &rotation, 0.1f, -89.9f, 89.9f, "%.1f"))
                 cannon.SetRotation(-degToRad(rotation));
 
             if (ImGui::Checkbox("Automatic rotation", &cannon.automaticRotation))

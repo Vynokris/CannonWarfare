@@ -28,7 +28,7 @@ void Cannon::UpdateTrajectory()
     // The three coefficients of the equation: a*t^2 + b*t + c
     const float a = GRAVITY * 0.5f;
     const float b = v0.y;
-    const float c = position.y - (groundHeight - 30);
+    const float c = shootingPoint.y - (groundHeight - 30);
 
     // Find the value for delta's square root.
     const float sqrtDelta = sqrt(sqpow(b) - 4*a*c);
@@ -42,18 +42,20 @@ void Cannon::UpdateTrajectory()
     landingVelocity = { v0.x, v0.y + GRAVITY * t };
 
     // Find the landing position using the cannonball's movement equation: (v0.x * t + p0.x, g * 0.5f * t^2 + v0.y * t + p0.y)
-    landingPosition = { v0.x*t + position.x, GRAVITY*0.5f*sqpow(t) + v0.y*t + position.y };
+    landingPosition = { v0.x*t + shootingPoint.x, GRAVITY*0.5f*sqpow(t) + v0.y*t + shootingPoint.y };
 
     // Find the control point of the bezier curve linked to the cannonball's movement equation.
     // This is done by finding the intersection between the line following lines:
     // - line that passes through the start position in the direction of the start velocity
     // - line that passes through the landing point in the direction of the landing velocity
-    controlPoint = LineIntersection(position, v0, landingPosition, -landingVelocity);
+    controlPoint = LineIntersection(shootingPoint, v0, landingPosition, -landingVelocity);
 
     // Save the trajectory's general parameters.
     airTime = t;
-    landingDistance = landingPosition.x - position.x;
-    maxHeight = clampAbove(position.y - (position * sqpow(1-0.5f) + controlPoint * 2*(1-0.5f)*0.5f + landingPosition * sqpow(0.5f)).y, 0); // TODO: This is broken with non-0 height.
+    landingDistance = landingPosition.x - shootingPoint.x;
+    const float highestPointT = clamp((shootingPoint.y - controlPoint.y) / (shootingPoint.y + landingPosition.y - 2*controlPoint.y), 0, 1);
+    highestPoint = shootingPoint * sqpow(1-highestPointT) + controlPoint * 2*(1-highestPointT)*highestPointT + landingPosition * sqpow(highestPointT);
+    maxHeight = clampAbove(shootingPoint.y - highestPoint.y, 0);
 }
 
 void Cannon::UpdateCollisions(CannonBall* cannonBall) const
@@ -78,6 +80,8 @@ void Cannon::UpdateDrawPoints()
     drawParams.wick1 = drawParams.wick0 - drawParams.wickPointOffset;
     drawParams.wick2 = drawParams.wick1 + drawParams.wickControlOffset;
     drawParams.wick3 = drawParams.wick0 - drawParams.wickControlOffset;
+
+    shootingPoint = (drawParams.frontUp + drawParams.frontDown) / 2.f;
 }
 
 void Cannon::Update(const float& deltaTime)
@@ -158,19 +162,12 @@ void Cannon::Draw() const
 void Cannon::DrawTrajectories() const
 {
     // Draw the trajectory.
-    const Color curTrajectoryColor = { drawParams.trajectoryColor.r,
-                                       drawParams.trajectoryColor.g,
-                                       drawParams.trajectoryColor.b,
-                                       (unsigned char)(drawParams.trajectoryAlpha * 255) };
-    DrawLineBezierQuad(ToRayVector2(position), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, curTrajectoryColor);
-    DrawPoly(ToRayVector2(landingPosition), 3, 12, radToDeg(landingVelocity.GetAngle()) - 90, curTrajectoryColor);
-
-    // Draw the air time text.
-    {
-        std::stringstream textValue; textValue << std::fixed << std::setprecision(2) << airTime << "s";
-        const Maths::Vector2 textPos = { controlPoint.x - MeasureText(textValue.str().c_str(), 30) / 2.f, position.y - maxHeight - 35 };
-        DrawText(textValue.str().c_str(), (int)textPos.x, (int)textPos.y, 30, curTrajectoryColor);
-    }
+    const Color curColor = { drawParams.trajectoryColor.r,
+                             drawParams.trajectoryColor.g,
+                             drawParams.trajectoryColor.b,
+                             (unsigned char)(drawParams.trajectoryAlpha * 255) };
+    DrawLineBezierQuad(ToRayVector2(shootingPoint), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, curColor);
+    DrawPoly(ToRayVector2(landingPosition), 3, 12, radToDeg(landingVelocity.GetAngle()) - 90, curColor);
     
     // Draw the cannonball trajectories.
     for (const CannonBall* projectile : projectiles)
@@ -179,17 +176,28 @@ void Cannon::DrawTrajectories() const
 
 void Cannon::DrawMeasurements() const
 {
+    // Draw the air time text.
+    {
+        const Color curColor = { drawParams.trajectoryColor.r,
+                                 drawParams.trajectoryColor.g,
+                                 drawParams.trajectoryColor.b,
+                                 (unsigned char)(drawParams.trajectoryAlpha * 255) };
+        std::stringstream textValue; textValue << std::fixed << std::setprecision(2) << airTime << "s";
+        const Maths::Vector2 textPos = { highestPoint.x - MeasureText(textValue.str().c_str(), 30) / 2.f, highestPoint.y - 35 };
+        DrawText(textValue.str().c_str(), (int)textPos.x, (int)textPos.y, 30, curColor);
+    }
+    
     // Draw the landing distance.
     {
         const Color curColor = { drawParams.landingDistanceColor.r,
                                  drawParams.landingDistanceColor.g,
                                  drawParams.landingDistanceColor.b,
                                  (unsigned char)(drawParams.measurementsAlpha * 255) };
-        DrawLine((int)position.x, (int)groundHeight + 20, (int)(position.x + landingDistance), (int)groundHeight + 20, curColor);
-        DrawPoly({ position.x                   + 12, groundHeight + 20 }, 3, 12,  90, curColor);
-        DrawPoly({ position.x + landingDistance - 12, groundHeight + 20 }, 3, 12, -90, curColor);
+        DrawLine((int)shootingPoint.x, (int)groundHeight + 20, (int)(shootingPoint.x + landingDistance), (int)groundHeight + 20, curColor);
+        DrawPoly({ shootingPoint.x                   + 12, groundHeight + 20 }, 3, 12,  90, curColor);
+        DrawPoly({ shootingPoint.x + landingDistance - 12, groundHeight + 20 }, 3, 12, -90, curColor);
         std::stringstream textValue; textValue << std::fixed << std::setprecision(0) << landingDistance << "px";
-        DrawText(textValue.str().c_str(), (int)(position.x + landingDistance / 2 - MeasureText(textValue.str().c_str(), 30) / 2.f), (int)groundHeight + 30, 30, curColor);
+        DrawText(textValue.str().c_str(), (int)(shootingPoint.x + landingDistance / 2 - MeasureText(textValue.str().c_str(), 30) / 2.f), (int)groundHeight + 30, 30, curColor);
     }
 
     // Draw the maximum height.
@@ -198,11 +206,11 @@ void Cannon::DrawMeasurements() const
                                  drawParams.maxHeightColor.g,
                                  drawParams.maxHeightColor.b,
                                  (unsigned char)(drawParams.measurementsAlpha * 255) };
-        DrawLine(30, (int)position.y, 30, (int)(position.y - maxHeight), curColor);
-        DrawPoly({ 30, position.y             - 12 }, 3, 12,   0, curColor);
-        DrawPoly({ 30, position.y - maxHeight + 12 }, 3, 12, 180, curColor);
+        DrawLine(30, (int)shootingPoint.y, 30, (int)(shootingPoint.y - maxHeight), curColor);
+        DrawPoly({ 30, shootingPoint.y             - 12 }, 3, 12,   0, curColor);
+        DrawPoly({ 30, shootingPoint.y - maxHeight + 12 }, 3, 12, 180, curColor);
         std::stringstream textValue; textValue << std::fixed << std::setprecision(0) << maxHeight << "px";
-        DrawText(textValue.str().c_str(), 15, (int)(position.y - maxHeight) - 30, 30, curColor);
+        DrawText(textValue.str().c_str(), 15, (int)(shootingPoint.y - maxHeight) - 30, 30, curColor);
     }
 }
 
@@ -221,7 +229,7 @@ void Cannon::Shoot()
     };
     particleManager.CreateSpawner(20, 0.2f, params);
     
-    projectiles.push_back(new CannonBall(particleManager, position, Maths::Vector2(rotation, shootingVelocity, true), airTime, groundHeight));
+    projectiles.push_back(new CannonBall(particleManager, shootingPoint, Maths::Vector2(rotation, shootingVelocity, true), airTime, groundHeight));
     if (projectiles.size() > MAX_PROJECTILES)
     {
         for (size_t i = 0; i < projectiles.size(); i++)

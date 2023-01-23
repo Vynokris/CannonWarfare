@@ -195,6 +195,7 @@ void CannonBall::DrawTrajectory() const
 	{
 		const Color curColor = { color.r, color.g, color.b, (unsigned char)min(trajectoryAlpha * 255, color.a) };
 		DrawLineBezierQuad(ToRayVector2(startPos), ToRayVector2(endPos), ToRayVector2(controlPoint), 1, curColor);
+		DrawCircleV(ToRayVector2(startPos), 5, curColor);
 		DrawPoly(ToRayVector2(endPos), 3, 12, radToDeg(endV.GetAngle()) - 90, curColor);
 	}
 }

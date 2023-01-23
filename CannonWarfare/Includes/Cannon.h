@@ -40,11 +40,11 @@ private:
 	const float& groundHeight;
 
 	// Cannon properties.
-	Maths::Vector2 position;
+	Maths::Vector2 position, shootingPoint;
 	float rotation = 0, shootingVelocity = 0;
 
 	// Predicted values for cannonballs.
-	Maths::Vector2 landingVelocity, landingPosition, controlPoint;
+	Maths::Vector2 landingVelocity, landingPosition, controlPoint, highestPoint;
 	float airTime = 0, maxHeight = 0, landingDistance = 0;
 
 	CannonDrawParams drawParams;
