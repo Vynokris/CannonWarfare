@@ -23,6 +23,7 @@ float Vector2::Cross(const Vector2& v) const { return (x * v.y) - (y * v.x); }
 // ------------ VECTOR2 METHODS ----------- //
 
 // Length.
+float Vector2::GetLengthSquared()       const { return sqpow(x) + sqpow(y); }
 float Vector2::GetLength()              const { return sqrt(sqpow(x) + sqpow(y)); }
 void  Vector2::SetLength(const float& length) { Normalize(); *this *= length; }
 

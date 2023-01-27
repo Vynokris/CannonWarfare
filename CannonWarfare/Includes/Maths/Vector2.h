@@ -34,6 +34,7 @@ namespace Maths
         // -- Methods -- //
 
         // Length.
+        float GetLengthSquared() const;       // Returns the vector's squared length.
         float GetLength() const;              // Returns the vector's length.
         void  SetLength(const float& length); // Modifies the vector's length to correspond to the given value.
 

@@ -20,42 +20,81 @@ Cannon::~Cannon()
 
 void Cannon::UpdateTrajectory()
 {
-    // Find the time (t) at which a cannonball would hit the ground.
-    // This is done by finding when the cannonball's vertical movement equation (a.y*0.5*t^2 + v0.y*t + p0.y) is equal to groundHeight
-    // It's the same as solving the following equation by finding its roots: a.y*0.5*t^2 + v0.y*t + p0.y - groundHeight
-    const Maths::Vector2 v0 = Maths::Vector2(rotation, shootingVelocity, true);
+    if (!applyDrag)
+    {
+        // Find the time (t) at which a cannonball would hit the ground.
+        // This is done by finding when the cannonball's vertical movement equation (a.y*0.5*t^2 + v0.y*t + p0.y) is equal to groundHeight
+        // It's the same as solving the following equation by finding its roots: a.y*0.5*t^2 + v0.y*t + p0.y - groundHeight
+        const Maths::Vector2 v0 = Maths::Vector2(rotation, shootingVelocity, true);
 
-    // The three coefficients of the equation: a*t^2 + b*t + c
-    const float a = GRAVITY * 0.5f;
-    const float b = v0.y;
-    const float c = shootingPoint.y - (groundHeight - 30);
+        // The three coefficients of the equation: a*t^2 + b*t + c
+        const float a = GRAVITY * 0.5f;
+        const float b = v0.y;
+        const float c = shootingPoint.y - (groundHeight - projectileRadius);
 
-    // Find the value for delta's square root.
-    const float sqrtDelta = sqrt(sqpow(b) - 4*a*c);
+        // Find the value for delta's square root.
+        const float sqrtDelta = sqrt(sqpow(b) - 4*a*c);
 
-    // Compute the equation's roots t1 and t2 and choose the highest one.
-    const float t1 = (-b - sqrtDelta) / (2*a);
-    const float t2 = (-b + sqrtDelta) / (2*a);
-    const float t  = (t1 >= t2 ? t1 : t2);
+        // Compute the equation's roots t1 and t2 and choose the highest one.
+        const float t1 = (-b - sqrtDelta) / (2*a);
+        const float t2 = (-b + sqrtDelta) / (2*a);
+        const float t  = (t1 >= t2 ? t1 : t2);
 
-    // Find the landing velocity using the cannonball's velocity equation: (v0.x, v0.y * g * t)
-    landingVelocity = { v0.x, v0.y + GRAVITY * t };
+        // Find the landing velocity using the cannonball's velocity equation: (v0.x, v0.y * g * t)
+        landingVelocity = { v0.x, v0.y + GRAVITY * t };
 
-    // Find the landing position using the cannonball's movement equation: (v0.x * t + p0.x, g * 0.5f * t^2 + v0.y * t + p0.y)
-    landingPosition = { v0.x*t + shootingPoint.x, GRAVITY*0.5f*sqpow(t) + v0.y*t + shootingPoint.y };
+        // Find the landing position using the cannonball's movement equation: (v0.x * t + p0.x, g * 0.5f * t^2 + v0.y * t + p0.y)
+        landingPosition = { v0.x*t + shootingPoint.x, GRAVITY*0.5f*sqpow(t) + v0.y*t + shootingPoint.y };
 
-    // Find the control point of the bezier curve linked to the cannonball's movement equation.
-    // This is done by finding the intersection between the line following lines:
-    // - line that passes through the start position in the direction of the start velocity
-    // - line that passes through the landing point in the direction of the landing velocity
-    controlPoint = LineIntersection(shootingPoint, v0, landingPosition, -landingVelocity);
+        // Find the control point of the bezier curve linked to the cannonball's movement equation.
+        // This is done by finding the intersection between the line following lines:
+        // - line that passes through the start position in the direction of the start velocity
+        // - line that passes through the landing point in the direction of the landing velocity
+        controlPoint = LineIntersection(shootingPoint, v0, landingPosition, -landingVelocity);
 
-    // Save the trajectory's general parameters.
-    airTime = t;
-    landingDistance = landingPosition.x - shootingPoint.x;
-    const float highestPointT = clamp((shootingPoint.y - controlPoint.y) / (shootingPoint.y + landingPosition.y - 2*controlPoint.y), 0, 1);
-    highestPoint = shootingPoint * sqpow(1-highestPointT) + controlPoint * 2*(1-highestPointT)*highestPointT + landingPosition * sqpow(highestPointT);
-    maxHeight = clampAbove(shootingPoint.y - highestPoint.y, 0);
+        // Save the trajectory's general parameters.
+        airTime = t;
+        landingDistance = landingPosition.x - shootingPoint.x;
+        const float highestPointT = clamp((shootingPoint.y - controlPoint.y) / (shootingPoint.y + landingPosition.y - 2*controlPoint.y), 0, 1);
+        highestPoint = shootingPoint * sqpow(1-highestPointT) + controlPoint * 2*(1-highestPointT)*highestPointT + landingPosition * sqpow(highestPointT);
+        maxHeight = clampAbove(shootingPoint.y - highestPoint.y, 0);
+    }
+    else
+    {
+        const float timeStep = 0.01f; airTime = 0; highestPoint.y = groundHeight;
+        Transform2D projectileTransform = { shootingPoint, { rotation, shootingVelocity, true }, { 0, GRAVITY }, 0, 0, true };
+        posPredicted.clear(); posPredicted.emplace_back(ToRayVector2(projectileTransform.position));
+
+        // Simulate a projectile with drag until it hits the ground.
+        while (projectileTransform.position.y < groundHeight - projectileRadius)
+        {
+            // Increment air time.
+            airTime += timeStep;
+
+            // Apply drag.
+            const float dragCoeff = 0.5f * AIR_DENSITY * SPHERE_DRAG_COEFF * PI * sqpow(projectileRadius / PIXEL_SCALE);
+            const float velocity  = projectileTransform.velocity.GetLength();
+            projectileTransform.acceleration -= projectileTransform.velocity * velocity * dragCoeff * timeStep * 0.1f;
+
+            // Update apply acceleration to velocity and velocity to acceleration.
+            projectileTransform.Update(timeStep);
+
+            // Save cannonball positions.
+            if (Maths::Vector2(FromRayVector2(posPredicted.back()), projectileTransform.position).GetLengthSquared() > 500.f)
+                posPredicted.emplace_back(ToRayVector2(projectileTransform.position));
+
+            // Stop simulation once the cannonball hits the ground.
+            if (projectileTransform.position.y < highestPoint.y)
+                highestPoint = projectileTransform.position;
+        }
+
+        // Save its final velocity, position, and maximum height.
+        landingVelocity = projectileTransform.velocity;
+        landingPosition = { projectileTransform.position.x, groundHeight - projectileRadius };
+        landingDistance = landingPosition.x - shootingPoint.x;
+        maxHeight = clampAbove(shootingPoint.y - highestPoint.y, 0);
+        posPredicted.emplace_back(ToRayVector2(landingPosition));
+    }
 }
 
 void Cannon::UpdateCollisions(CannonBall* cannonBall) const
@@ -107,10 +146,6 @@ void Cannon::Update(const float& deltaTime)
         if (projectiles[i]->showTrajectory != showProjectileTrajectories)
             projectiles[i]->showTrajectory  = showProjectileTrajectories;
 
-        // Tell all projectiles to apply/ignore drag.
-        if (projectiles[i]->applyDrag != applyDrag)
-            projectiles[i]->applyDrag  = applyDrag;
-
         // Delete any projectile that has finished destroying itself.
         if (projectiles[i]->IsDestroyed()) {
             delete projectiles[i];
@@ -159,18 +194,24 @@ void Cannon::Draw() const
                         ToRayVector2(drawParams.wick3), 1, drawParams.cannonColor);
 }
 
-void Cannon::DrawTrajectories() const
+void Cannon::DrawTrajectories()
 {
-    // Draw the trajectory.
     const Color curColor = { drawParams.trajectoryColor.r,
                              drawParams.trajectoryColor.g,
                              drawParams.trajectoryColor.b,
                              (unsigned char)(drawParams.trajectoryAlpha * 255) };
-    DrawLineBezierQuad(ToRayVector2(shootingPoint), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, curColor);
+    
+    // Draw the trajectory.
+    if (!applyDrag)
+        DrawLineBezierQuad(ToRayVector2(shootingPoint), ToRayVector2(landingPosition), ToRayVector2(controlPoint), 1, curColor);
+    else
+        DrawLineStrip(posPredicted.data(), (int)posPredicted.size(), curColor);
+
+    // Draw the arrow at the end of the trajectory.
     DrawPoly(ToRayVector2(landingPosition), 3, 12, radToDeg(landingVelocity.GetAngle()) - 90, curColor);
     
     // Draw the cannonball trajectories.
-    for (const CannonBall* projectile : projectiles)
+    for (CannonBall* projectile : projectiles)
         projectile->DrawTrajectory();
 }
 
@@ -216,6 +257,7 @@ void Cannon::DrawMeasurements() const
 
 void Cannon::Shoot()
 {
+    // Play shooting particles.
     const SpawnerParticleParams params = {
         ParticleShapes::LINE,
         (drawParams.frontUp + drawParams.frontDown) / 2,
@@ -229,7 +271,13 @@ void Cannon::Shoot()
     };
     particleManager.CreateSpawner(20, 0.2f, params);
     
+    // Shoot a new cannonball.
     projectiles.push_back(new CannonBall(particleManager, shootingPoint, Maths::Vector2(rotation, shootingVelocity, true), airTime, groundHeight));
+    projectiles.back()->applyDrag = applyDrag;
+    projectiles.back()->radius    = projectileRadius;
+    projectiles.back()->mass      = projectileMass;
+
+    // Destroy the oldest projectile if there are too many.
     if (projectiles.size() > MAX_PROJECTILES)
     {
         for (size_t i = 0; i < projectiles.size(); i++)

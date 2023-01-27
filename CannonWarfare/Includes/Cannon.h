@@ -42,11 +42,13 @@ private:
 	// Cannon properties.
 	Maths::Vector2 position, shootingPoint;
 	float rotation = 0, shootingVelocity = 0;
+	float mass = 6900, length = 3.08f, projectileRadius = 30, projectileMass = 4;
 
 	// Predicted values for cannonballs.
 	Maths::Vector2 landingVelocity, landingPosition, controlPoint, highestPoint;
 	float airTime = 0, maxHeight = 0, landingDistance = 0;
-
+	std::vector<::Vector2> posPredicted; // Used to draw trajectory with drag.
+	
 	CannonDrawParams drawParams;
 
 public:
@@ -68,7 +70,7 @@ public:
 
 	void Update(const float& deltaTime);
 	void Draw() const;
-	void DrawTrajectories() const;
+	void DrawTrajectories();
 	void DrawMeasurements() const;
 
 	void Shoot();

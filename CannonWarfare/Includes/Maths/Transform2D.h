@@ -8,9 +8,9 @@ namespace Maths
         Vector2 position;
         Vector2 velocity;
         Vector2 acceleration;
-        float   rotation;
-        float   angularVelocity;
-        bool    rotateForwards = false;
+        float   rotation        = 0;
+        float   angularVelocity = 0;
+        bool    rotateForwards  = false;
 
         void Update(const float& deltaTime);
     };
