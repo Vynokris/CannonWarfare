@@ -48,9 +48,9 @@ App::App(const Maths::Vector2& _screenSize, const int& _targetFPS)
     groundHeight = screenSize.y - 100;
 
     // Set the cannon's default position, rotation and shooting velocity.
-    cannon.SetPosition({ 90, screenSize.y - 150 });
+    cannon.SetPosition ({ 90, screenSize.y - 150 });
+    cannon.SetAnchorPos({ 90, screenSize.y - 150 });
     cannon.SetRotation(-PI / 5);
-    cannon.SetShootingVelocity(900);
 }
 
 App::~App()
@@ -116,17 +116,31 @@ void App::DrawUi()
             ImGui::SetWindowPos({ screenSize.x / 2.f - ImGui::GetWindowWidth() / 2.f, 1.f });
             ImGui::PushItemWidth(43);
 
-            static float shootingVelocity = cannon.GetShootingVelocity();
-            if (ImGui::DragFloat("Shooting Velocity", &shootingVelocity, 1.f, 100.f, 2000.f, "%.0f"))
-                cannon.SetShootingVelocity(shootingVelocity);
+            static float powderCharge = cannon.GetPowderCharge();
+            if (ImGui::DragFloat("Powder Charge (kg)", &powderCharge, 0.1f, 2, 10, "%.1f"))
+                cannon.SetPowderCharge(clamp(powderCharge, 2, 10));
+
+            static float barrelLength = cannon.GetBarrelLength();
+            if (ImGui::DragFloat("Barrel Length (px)", &barrelLength, 2, 500, 2500, "%.0f"))
+                cannon.SetBarrelLength(clamp(barrelLength, 500, 2500));
+
+            static float projectileRadius = cannon.GetProjectileRadius();
+            if (ImGui::DragFloat("Projectile Radius (px)", &projectileRadius, 0.5f, 5, 50, "%.0f"))
+                cannon.SetProjectileRadius(clamp(projectileRadius, 5, 50));
+
+            static float projectileMass = cannon.GetProjectileMass();
+            if (ImGui::DragFloat("Projectile Mass (kg)", &projectileMass, 0.2f, 2, 50, "%.1f"))
+                cannon.SetProjectileMass(clamp(projectileMass, 2, 50));
 
             static float height = 0;
-            if (ImGui::DragFloat("Height", &height, 0.5f, 0.f, screenSize.y - 250, "%.0f"))
-                cannon.SetPosition({ cannon.GetPosition().x, screenSize.y - 150 - height });
+            if (ImGui::DragFloat("Height (px)", &height, 0.5f, 0.f, screenSize.y - 250, "%.0f")) {
+                cannon.SetAnchorPos({ cannon.GetAnchorPos().x, screenSize.y - 150 - height });
+                cannon.SetPosition (cannon.GetAnchorPos());
+            }
 
             static float rotation = -radToDeg(cannon.GetRotation());
-            if (!cannon.automaticRotation && ImGui::DragFloat("Rotation", &rotation, 0.1f, -89.9f, 89.9f, "%.1f"))
-                cannon.SetRotation(-degToRad(rotation));
+            if (!cannon.automaticRotation && ImGui::DragFloat("Rotation (deg)", &rotation, 0.1f, -89.9f, 89.9f, "%.1f"))
+                cannon.SetRotation(-degToRad(clamp(rotation, -89.9f, 89.9f)));
 
             if (ImGui::Checkbox("Automatic rotation", &cannon.automaticRotation))
                 rotation = -radToDeg(cannon.GetRotation());
@@ -137,6 +151,20 @@ void App::DrawUi()
             ImGui::SameLine();
             if (ImGui::Button("Clear"))
                 cannon.ClearProjectiles();
+
+            ImGui::SameLine();
+            if (ImGui::Button("Reset"))
+            {
+                const CannonProperties defaults;
+                cannon.SetPowderCharge(defaults.powderCharge);
+                cannon.SetBarrelLength(defaults.barrelLength);
+                cannon.SetProjectileRadius(defaults.projectileRadius);
+                cannon.SetProjectileMass(defaults.projectileMass);
+                powderCharge     = defaults.powderCharge;
+                barrelLength     = defaults.barrelLength;
+                projectileRadius = defaults.projectileRadius;
+                projectileMass   = defaults.projectileMass;
+            }
 
             ImGui::PopItemWidth();
         }
@@ -149,6 +177,7 @@ void App::DrawUi()
             ImGui::Text("Landing distance: %.0f pixels", cannon.GetLandingDistance());
             ImGui::Text("Maximum height: %.0f pixels",   cannon.GetMaxHeight());
             
+            ImGui::Checkbox("Apply recoil", &cannon.applyRecoil);
             if (ImGui::Checkbox("Apply drag", &cannon.applyDrag)) {
                 cannon.applyCollisions = false;
                 cannon.SetRotation(cannon.GetRotation());

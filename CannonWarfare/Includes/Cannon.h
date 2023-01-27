@@ -1,5 +1,6 @@
 #pragma once
 #include "CannonBall.h"
+#include "Physics/PhysicsConstants.h"
 #include "raylib.h"
 #include <vector>
 
@@ -32,6 +33,17 @@ struct CannonDrawParams
 	Maths::Vector2 wick3;
 };
 
+struct CannonProperties
+{
+	Maths::Vector2 anchorPos;
+	float mass = 2500;                           // kg
+	float barrelLength = 3.08f * PIXEL_SCALE;    // m -> px
+	float powderCharge = 3.6f;                   // kg
+	float chargeVelocity = 685.8f * PIXEL_SCALE; // m/s -> px/s
+	float projectileRadius = 30;                 // px
+	float projectileMass = 3.92f;                // kg
+};
+
 class Cannon
 {
 private:
@@ -40,9 +52,9 @@ private:
 	const float& groundHeight;
 
 	// Cannon properties.
-	Maths::Vector2 position, shootingPoint;
-	float rotation = 0, shootingVelocity = 0;
-	float mass = 6900, length = 3.08f, projectileRadius = 30, projectileMass = 4;
+	Maths::Transform2D transform;
+	Maths::Vector2 shootingPoint;
+	CannonProperties properties;
 
 	// Predicted values for cannonballs.
 	Maths::Vector2 landingVelocity, landingPosition, controlPoint, highestPoint;
@@ -53,6 +65,7 @@ private:
 
 public:
 	bool automaticRotation = true;
+	bool applyRecoil       = false;
 	bool applyDrag         = false;
 	bool applyCollisions   = false;
 	bool showTrajectory    = true;
@@ -60,9 +73,11 @@ public:
 	bool showProjectileTrajectories = true;
 	
 private:
-	void UpdateTrajectory();
-	void UpdateCollisions(CannonBall* cannonBall) const;
-	void UpdateDrawPoints();
+	void  UpdateDrawPoints();
+	void  UpdateTrajectory();
+	void  UpdateCollisions(CannonBall* cannonBall) const;
+	void  ApplyRecoil();
+	float ComputeMuzzleVelocity();
 
 public:
 	Cannon(ParticleManager& _particleManager, const float& _groundHeight);
@@ -76,13 +91,21 @@ public:
 	void Shoot();
 	void ClearProjectiles() const;
 
-	void SetPosition(const Maths::Vector2& pos) { position = pos; UpdateTrajectory(); UpdateDrawPoints(); }
-	void SetRotation(const float&          rot) { rotation = rot; UpdateTrajectory(); UpdateDrawPoints(); }
-	void SetShootingVelocity(const float&  vel) { shootingVelocity = vel; UpdateTrajectory(); }
-
-	Maths::Vector2 GetPosition()         const { return position; }
-	float          GetRotation()         const { return rotation; }
-	float          GetShootingVelocity() const { return shootingVelocity; }
+	void SetAnchorPos(const Maths::Vector2&  pos) { properties.anchorPos          = pos;  UpdateTrajectory(); UpdateDrawPoints(); }
+	void SetPosition (const Maths::Vector2&  pos) { transform.position            = pos;  UpdateTrajectory(); UpdateDrawPoints(); }
+	void SetRotation (const float&           rot) { transform.rotation            = rot;  UpdateTrajectory(); UpdateDrawPoints(); }
+	void SetProjectileRadius  (const float& rad ) { properties.projectileRadius   = rad;  UpdateTrajectory(); UpdateDrawPoints(); }
+	void SetProjectileMass    (const float& mass) { properties.projectileMass     = mass; UpdateTrajectory(); }
+	void SetBarrelLength      (const float& len ) { properties.barrelLength       = len;  UpdateTrajectory(); UpdateDrawPoints(); }
+	void SetPowderCharge      (const float& mass) { properties.powderCharge       = mass; UpdateTrajectory(); }
+	
+	Maths::Vector2 GetAnchorPos()          const { return properties.anchorPos;          }
+	Maths::Vector2 GetPosition()           const { return transform.position;            }
+	float          GetRotation()           const { return transform.rotation;            }
+	float          GetProjectileRadius()   const { return properties.projectileRadius;   }
+	float          GetProjectileMass()     const { return properties.projectileMass;     }
+	float          GetBarrelLength()       const { return properties.barrelLength;       }
+	float          GetPowderCharge()       const { return properties.powderCharge;       }
 
 	float GetAirTime()         const { return airTime;         }
 	float GetMaxHeight()       const { return maxHeight;       }
