@@ -40,7 +40,7 @@ The goal was to create a realistic simulation of a 2D cannon. The cannonballs ha
 
 - The cannonball's muzzle velocity is computed using the following formula: <br>
     <img src="Screenshots/muzzleVelocity.png"/> <br>
-    See [this link]("https://www.arc.id.au/CannonBallistics.html") for more info. <br>
+    See <a href="https://www.arc.id.au/CannonBallistics.html">this link</a> for more info. <br>
     See ```Cannon.cpp > ComputeMuzzleVelocity()```.
 
 <br>
